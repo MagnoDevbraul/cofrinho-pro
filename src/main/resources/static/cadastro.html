@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro - Cofrinho Pro</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #e9eef2; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 320px; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e0; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #48bb78; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>📝 Nova Conta</h2>
+    <input type="text" id="user" placeholder="Usuário">
+    <input type="password" id="pass" placeholder="Senha">
+    <input type="text" id="key" placeholder="Palavra-Chave (Segurança)">
+    <button onclick="cadastrar()">Salvar Cadastro</button>
+    <p><a href="/login" style="font-size: 0.8rem; color: #718096;">Voltar ao Login</a></p>
+</div>
+
+<script>
+    async function cadastrar() {
+        const user = document.getElementById('user').value;
+        const pass = document.getElementById('pass').value;
+        const key = document.getElementById('key').value;
+
+        const resp = await fetch('/auth/cadastrar', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({username: user, password: pass, palavraChave: key})
+        });
+
+        if(resp.ok) {
+            alert("Usuário criado com sucesso!");
+            window.location.href = "/login";
+        }
+    }
+</script>
+</body>
+</html>

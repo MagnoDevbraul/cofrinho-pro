@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Cofrinho Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --bg: #e9eef2; --card: #ffffff; --primary: #3182ce; --success: #48bb78; --danger: #e53e3e; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .main-container { width: 100%; max-width: 1300px; display: grid; grid-template-columns: 280px 1fr; gap: 20px; }
+        .card { background: var(--card); border-radius: 12px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #dce3e8; margin-bottom: 20px; }
+        h3 { color: #4a5568; margin: 0 0 15px 0; font-size: 1rem; border-bottom: 1px solid #edf2f7; padding-bottom: 8px; }
+        .top-row { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 20px; margin-bottom: 5px; }
+        .nav-btn { width: 100%; padding: 12px; margin: 5px 0; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; text-align: left; cursor: pointer; transition: 0.2s; }
+        .nav-btn:hover { background: #f7fafc; border-color: var(--primary); }
+        .coin-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .btn-coin { padding: 10px 5px; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; font-size: 0.75rem; background: var(--success); display: flex; flex-direction: column; align-items: center; }
+        input { width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 8px; margin: 5px 0; box-sizing: border-box; }
+        .btn-action { background: var(--primary); color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f8fafc; padding: 10px; text-align: left; font-size: 0.75rem; color: #64748b; }
+        td { padding: 10px; border-bottom: 1px solid #edf2f7; font-size: 0.85rem; }
+        .hidden { display: none; }
+        .result-box { background: #ebf8ff; padding: 15px; border-radius: 8px; margin-top: 10px; font-weight: bold; color: #2b6cb0; text-align: center; border: 1px solid #bee3f8; }
+        .bottom-layout { display: grid; grid-template-columns: 320px 1fr; gap: 20px; }
+        .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: bold; color: white; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <aside>
+        <div class="card">
+            <h3>🏦 Menu</h3>
+            <button class="nav-btn" onclick="exibirTotal()">💰 Ver Total (Alternar)</button>
+            <div id="resultado-total" class="result-box hidden"></div>
+            <button class="nav-btn" style="margin-top:10px;" onclick="document.getElementById('area-remocao').classList.toggle('hidden')">➖ Remover Valores</button>
+        </div>
+        <div id="area-remocao" class="card hidden">
+            <h3 style="color: var(--danger);">Remover Quantia</h3>
+            <input type="number" id="id-remover" placeholder="ID da Moeda">
+            <input type="text" id="valor-remover" placeholder="Quanto retirar? (0,00)" oninput="mask(this)">
+            <button class="btn-action" style="background: var(--danger)" onclick="executarRemocao()">Confirmar Retirada</button>
+        </div>
+        <button class="nav-btn" style="color: var(--danger); text-align: center;" onclick="executarLogout()">Sair do Sistema</button>
+    </aside>
+
+    <main>
+        <div class="top-row">
+            <div class="card">
+                <h3>Nova Moeda</h3>
+                <div class="coin-grid">
+                    <button class="btn-coin" onclick="preparar(1)"><span>ID: 1</span>REAL</button>
+                    <button class="btn-coin" onclick="preparar(2)"><span>ID: 2</span>DÓLAR</button>
+                    <button class="btn-coin" onclick="preparar(3)"><span>ID: 3</span>EURO</button>
+                    <button class="btn-coin" onclick="preparar(4)"><span>ID: 4</span>IENE</button>
+                    <button class="btn-coin" onclick="preparar(5)"><span>ID: 5</span>YUAN</button>
+                    <button class="btn-coin" onclick="preparar(6)"><span>ID: 6</span>RUPIA</button>
+                    <button class="btn-coin" onclick="preparar(7)"><span>ID: 7</span>WON</button>
+                    <button class="btn-coin" onclick="preparar(8)"><span>ID: 8</span>SHEKEL</button>
+                </div>
+                <div id="area-valor" class="hidden">
+                    <input type="text" id="campo-valor" placeholder="0,00" oninput="mask(this)">
+                    <button class="btn-action" onclick="depositar()">Confirmar Depósito</button>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Volume por Tipo (R$)</h3>
+                <canvas id="graficoBarra" style="max-height: 180px;"></canvas>
+            </div>
+        </div>
+        <div class="bottom-layout">
+            <div class="card"><canvas id="graficoPizza"></canvas></div>
+            <div class="card">
+                <h3>📜 Histórico de Transações</h3>
+                <table>
+                    <thead><tr><th>ID</th><th>Moeda</th><th>Movimentação</th><th>Ação</th><th>Data e Hora</th></tr></thead>
+                    <tbody id="tabela-corpo"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    let selecionado = 0, gPizza, gBarra;
+
+    window.onload = function() {
+        carregar();
+        // Atalhos de ENTER
+        document.getElementById('campo-valor').addEventListener('keypress', (e) => { if(e.key==='Enter') depositar(); });
+        document.getElementById('id-remover').addEventListener('keypress', (e) => { if(e.key==='Enter') executarRemocao(); });
+        document.getElementById('valor-remover').addEventListener('keypress', (e) => { if(e.key==='Enter') executarRemocao(); });
+    };
+
+    function mask(i) {
+        let v = i.value.replace(/\D/g,'');
+        v = (v/100).toFixed(2).replace(".", ",");
+        i.value = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+    }
+
+    function preparar(id) {
+        selecionado = id;
+        document.getElementById('area-valor').classList.remove('hidden');
+        document.getElementById('campo-valor').focus();
+    }
+
+    async function carregar() {
+        try {
+            // Atualiza Moedas e Gráficos
+            const rM = await fetch('/moedas/total');
+            const moedas = await rM.json();
+            atualizarGraficos(moedas);
+
+            // Atualiza Tabela de Histórico Real
+            const rH = await fetch('/moedas/historico');
+            const transacoes = await rH.json();
+            const corpo = document.getElementById('tabela-corpo');
+            corpo.innerHTML = "";
+
+            transacoes.forEach(t => {
+                const isDep = t.tipo === "DEPÓSITO";
+                corpo.innerHTML += `
+                    <tr>
+                        <td>${t.id}</td>
+                        <td>${t.moedaNome}</td>
+                        <td style="font-weight:bold; color:${isDep?'#48bb78':'#e53e3e'}">${isDep?'+':'-'} R$ ${t.valorAlterado.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+                        <td><span class="badge" style="background:${isDep?'#48bb78':'#e53e3e'}">${t.tipo}</span></td>
+                        <td>${new Date(t.dataHora).toLocaleString('pt-BR')}</td>
+                    </tr>`;
+            });
+        } catch (e) { console.error(e); }
+    }
+
+    function atualizarGraficos(dados) {
+        // Usa tipoMoeda conforme definido no seu modelo Java
+        const labels = dados.map(m => m.nome);
+        const values = dados.map(m => m.valor);
+        const colors = ['#2ecc71', '#3498db', '#f1c40f', '#e67e22', '#e74c3c', '#9b59b6', '#1abc9c', '#34495e'];
+
+        if(gBarra) gBarra.destroy();
+        gBarra = new Chart(document.getElementById('graficoBarra'), {
+            type:'bar',
+            data:{labels, datasets:[{label:'Saldo Acumulado (R$)', data:values, backgroundColor:colors}]}
+        });
+
+        if(gPizza) gPizza.destroy();
+        gPizza = new Chart(document.getElementById('graficoPizza'), {
+            type:'pie',
+            data:{labels, datasets:[{data:values, backgroundColor:colors}]}
+        });
+    }
+
+    async function depositar() {
+        const campo = document.getElementById('campo-valor');
+        const v = campo.value.replace(/\./g,'').replace(',','.');
+        if(!v || v <= 0) return;
+
+        await fetch(`/moedas/adicionar/${selecionado}?valor=${v}`);
+        campo.value = "";
+        document.getElementById('area-valor').classList.add('hidden');
+        carregar();
+    }
+
+    async function executarRemocao() {
+        const id = document.getElementById('id-remover').value;
+        const v = document.getElementById('valor-remover').value.replace(/\./g,'').replace(',','.');
+        if(!id || !v || v <= 0) return;
+
+        await fetch(`/moedas/remover-valores/${id}?valor=${v}`);
+        document.getElementById('id-remover').value = "";
+        document.getElementById('valor-remover').value = "";
+        document.getElementById('area-remocao').classList.add('hidden');
+        carregar();
+    }
+
+    async function exibirTotal() {
+        const box = document.getElementById('resultado-total');
+        if(!box.classList.contains('hidden')) { box.classList.add('hidden'); return; }
+        const r = await fetch('/moedas/total');
+        const d = await r.json();
+        const t = d.reduce((a, m) => a + m.valor, 0);
+        box.innerText = `Total Geral: R$ ${t.toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+        box.classList.remove('hidden');
+    }
+
+    function executarLogout() { window.location.href = "/logout"; }
+</script>
+</body>
+</html>
