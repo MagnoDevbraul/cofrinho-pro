@@ -25,4 +25,4 @@ Sistema de gerenciamento de economias que permite registrar depósitos e retirad
 1. **Usuário**: Eujava
 2. **Senha**: 1234
 
-   * **OBRIGADO POR PARTICIPAR DO MEU PROJETO!** *
+   **OBRIGADO POR PARTICIPAR DO MEU PROJETO!**
