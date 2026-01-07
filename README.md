@@ -20,3 +20,9 @@ Sistema de gerenciamento de economias que permite registrar depósitos e retirad
 2. Abra no IntelliJ IDEA.
 3. Execute a classe `CofrinhoApiApplication`.
 4. Acesse `http://localhost:8080` no navegador.
+
+## Para testar, inserir Usuário e Senha.
+1. **Usuário**: Eujava
+2. **Senha**: 1234
+
+   * **OBRIGADO POR PARTICIPAR DO MEU PROJETO!** *
