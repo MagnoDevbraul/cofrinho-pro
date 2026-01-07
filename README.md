@@ -24,6 +24,8 @@ Sistema de gerenciamento de economias que permite registrar depósitos e retirad
 ## Imagens Do Projeto!
 <img width="1228" height="607" alt="Captura de tela 07-01-2026 09 11 28" src="https://github.com/user-attachments/assets/15496a99-282d-458b-a240-c98f0b6edc12" />
 <img width="1366" height="607" alt="Captura de tela 07-01-2026 09 06 02" src="https://github.com/user-attachments/assets/5b52cf40-fc92-47c2-aee7-4f4f35436e06" />
+<img width="1361" height="724" alt="Captura de tela 07-01-2026 09 53 31" src="https://github.com/user-attachments/assets/3ba0ef62-7936-430f-a1bb-941ae1cc6171" />
+
 
 ## Para testar, inserir Usuário e Senha.
 1. **Usuário**: Eujava
