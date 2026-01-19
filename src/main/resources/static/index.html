@@ -5,7 +5,7 @@
     <title>Cofrinho Pro - Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Variáveis de Cores e Temas */
+        /* Variáveis de Cores e Temas - RESTAURADO */
         :root {
             --bg: #f0f2f5; --card: #ffffff; --primary: #3182ce;
             --success: #48bb78; --danger: #f56565; --text: #2d3748;
@@ -21,7 +21,6 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; color: var(--text); transition: 0.3s; }
         .main-container { width: 100%; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 280px 1fr; gap: 20px; }
 
-        /* Sidebar e Cards */
         .card { background: var(--card); border-radius: 20px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-bottom: 20px; border: none; transition: 0.3s; }
         h3 { font-size: 0.85rem; margin-top: 0; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; text-transform: uppercase; opacity: 0.8; }
 
@@ -29,16 +28,19 @@
         .nav-btn { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid var(--border); border-radius: 50px; background: var(--input-bg); cursor: pointer; transition: 0.3s; font-weight: 600; color: var(--text); }
         .nav-btn:hover { border-color: var(--primary); color: var(--primary); }
 
-        /* Botão Sair Especial */
-        .btn-logout { margin-top: 20px; border-color: #e5e7eb; color: #a0aec0; }
-        .btn-logout:hover { border-color: var(--danger); color: var(--danger); background: rgba(245, 101, 101, 0.1); }
+        /* BOTÕES ESPECIAIS COM HOVER VERMELHO VIVO */
+        .btn-logout:hover, .btn-danger-vivid:hover {
+            background: #ff0000 !important;
+            color: white !important;
+            border-color: #ff0000 !important;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+        }
 
-        /* Grid de Moedas */
         .coin-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
         .btn-coin { border: none; border-radius: 12px; color: white; padding: 12px 5px; font-weight: bold; cursor: pointer; font-size: 0.7rem; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 3px; }
         .btn-coin:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
-        /* Cores Fixas */
+        /* Cores das Moedas */
         .c-real { background: #3182ce; } .c-dolar { background: #718096; } .c-euro { background: #48bb78; }
         .c-iene { background: #f56565; } .c-yuan { background: #ecc94b; } .c-rupia { background: #9f7aea; }
         .c-won { background: #ed8936; } .c-shekel { background: #4fd1c5; }
@@ -46,9 +48,8 @@
         input { width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 10px; margin: 5px 0; box-sizing: border-box; background: var(--input-bg); color: var(--text); }
         .btn-action { background: var(--primary); color: white; padding: 12px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 5px; }
 
-        /* Tabela e Layout */
         table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; color: var(--text); opacity: 0.6; font-size: 0.7rem; padding-bottom: 10px; }
+        th { text-align: left; opacity: 0.6; font-size: 0.7rem; padding-bottom: 10px; }
         td { padding: 12px 5px; font-size: 0.85rem; border-bottom: 1px solid var(--border); color: var(--text); }
         .badge { padding: 3px 8px; border-radius: 50px; font-size: 0.65rem; color: #fff !important; font-weight: bold; }
 
@@ -72,8 +73,20 @@
             <button class="nav-btn" onclick="toggleDetalhes()">Ver Detalhes</button>
             <button class="nav-btn" onclick="document.getElementById('area-remocao').classList.toggle('hidden')">Retirar Valor</button>
 
+            <button class="nav-btn" onclick="document.getElementById('area-perfil').classList.toggle('hidden')" style="border-color: var(--primary); color: var(--primary);">⚙️ Perfil / Editar</button>
+
             <hr style="border: 0; border-top: 1px solid var(--border); margin: 15px 0;">
             <button class="nav-btn btn-logout" onclick="sair()">🚪 Sair</button>
+        </div>
+
+        <div id="area-perfil" class="card hidden">
+            <h3>Editar Usuário</h3>
+            <label for="edit-username" style="font-size: 0.7rem; font-weight: bold">Username Atual</label>
+            <input type="text" id="edit-username" placeholder="Username">
+            <label for="edit-password" style="font-size: 0.7rem; font-weight: bold">Nova Senha</label>
+            <input type="password" id="edit-password" placeholder="Nova Senha">
+            <button class="btn-action" onclick="salvarEdicao()">Salvar</button>
+            <button class="btn-action btn-danger-vivid" style="background:#333; margin-top:10px" onclick="excluirConta()">Excluir Conta</button>
         </div>
 
         <div id="card-detalhes" class="card hidden">
@@ -84,8 +97,8 @@
         <div id="area-remocao" class="card hidden">
             <h3 style="color: var(--danger)">Retirada</h3>
             <input type="number" id="id-remover" placeholder="ID da Moeda">
-            <input type="text" id="valor-remover" placeholder="0,00" oninput="mask(this)" onkeydown="if(event.key==='Enter') executarRemocao()">
-            <button class="btn-action" style="background: var(--danger)" onclick="executarRemocao()">Confirmar Retirada</button>
+            <input type="text" id="valor-remover" placeholder="0,00" oninput="mask(this)">
+            <button class="btn-action btn-danger-vivid" style="background: var(--danger)" onclick="executarRemocao()">Confirmar Retirada</button>
         </div>
     </aside>
 
@@ -95,7 +108,7 @@
                 <h3>Moedas no Cofrinho</h3>
                 <div class="coin-grid" id="grid-moedas"></div>
                 <div id="area-valor" class="hidden">
-                    <input type="text" id="campo-valor" placeholder="Valor do Depósito" oninput="mask(this)" onkeydown="if(event.key==='Enter') depositar()">
+                    <input type="text" id="campo-valor" placeholder="Valor do Depósito" oninput="mask(this)">
                     <button class="btn-action" onclick="depositar()">Confirmar Depósito</button>
                 </div>
             </div>
@@ -111,7 +124,7 @@
                 <canvas id="graficoRosca"></canvas>
             </div>
             <div class="card">
-                <h3>📜 Histórico de Transações</h3>
+                <h3> Histórico de Transações</h3>
                 <table>
                     <thead>
                     <tr><th>Moeda</th><th>Valor</th><th>Ação</th><th>Data/Hora</th></tr>
@@ -137,6 +150,16 @@
         'Shekel': { cor: 'c-shekel', simbolo: '₪',  taxa: 0.75, hex: '#4fd1c5' }
     };
 
+    // ATALHO ENTER - RESTAURADO E COMPLETO
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const el = document.activeElement.id;
+            if (el === 'campo-valor') depositar();
+            if (el === 'valor-remover' || el === 'id-remover') executarRemocao();
+            if (el === 'edit-password') salvarEdicao();
+        }
+    });
+
     function toggleTheme() {
         const doc = document.documentElement;
         const isDark = doc.getAttribute('data-theme') === 'dark';
@@ -148,11 +171,6 @@
     }
 
     if (localStorage.getItem('theme') === 'dark') toggleTheme();
-
-    function sair() {
-        // Redireciona para a tela de login
-        window.location.href = '/login';
-    }
 
     async function carregar() {
         try {
@@ -186,6 +204,29 @@
             const valorNaMoeda = m.valor * conf.taxa;
             grid.innerHTML += `<button class="btn-coin ${conf.cor}" onclick="preparar(${m.id})"><span style="font-size:0.6rem; opacity:0.8">ID: ${m.id}</span><span>${m.nome.toUpperCase()}</span><span class="coin-val">${conf.simbolo} ${valorNaMoeda.toFixed(2)}</span></button>`;
         });
+    }
+
+    // NOVAS FUNÇÕES DE PERFIL (RESTAURADAS E CONFIGURADAS PARA /AUTH)
+    async function salvarEdicao() {
+        const username = document.getElementById('edit-username').value;
+        const password = document.getElementById('edit-password').value;
+        if(!username || !password) return alert("Preencha username e senha!");
+        const resp = await fetch('/auth/editar', {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({username, password})
+        });
+        alert(await resp.text());
+        if(resp.ok) location.reload();
+    }
+
+    async function excluirConta() {
+        const user = prompt("Digite seu username para confirmar exclusão:");
+        if(user && confirm("CERTEZA ABSOLUTA? Seus dados serão perdidos.")) {
+            const resp = await fetch(`/auth/excluir?username=${user}`, { method: 'DELETE' });
+            alert(await resp.text());
+            window.location.href = '/login';
+        }
     }
 
     function toggleTotal() {
@@ -232,6 +273,7 @@
 
     function preparar(id) { selecionado = id; document.getElementById('area-valor').classList.remove('hidden'); document.getElementById('campo-valor').focus(); }
     function mask(i) { let v = i.value.replace(/\D/g,''); v = (v/100).toFixed(2).replace(".", ","); i.value = v; }
+    function sair() { window.location.href = '/login'; }
     async function depositar() { const v = document.getElementById('campo-valor').value.replace(',','.'); if(!v || v == "0.00") return; await fetch(`/moedas/adicionar/${selecionado}?valor=${v}`); location.reload(); }
     async function executarRemocao() { const id = document.getElementById('id-remover').value; const v = document.getElementById('valor-remover').value.replace(',','.'); if(!id || !v || v == "0.00") return; await fetch(`/moedas/remover-valores/${id}?valor=${v}`); location.reload(); }
 

@@ -4,28 +4,78 @@
     <meta charset="UTF-8">
     <title>Cadastro - Cofrinho Pro</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #e9eef2; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 320px; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e0; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #48bb78; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        /* Variáveis para manter o padrão do Dashboard */
+        :root {
+            --bg: #f0f2f5; --card: #ffffff; --primary: #3182ce;
+            --success: #48bb78; --text: #2d3748; --border: #e2e8f0;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: var(--text); }
+
+        .card { background: var(--card); padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 350px; text-align: center; }
+
+        h2 { margin-bottom: 25px; opacity: 0.8; }
+
+        /* Labels invisíveis para leitores de tela (resolve avisos do IntelliJ) */
+        label { display: block; text-align: left; font-size: 0.8rem; margin: 5px 0 2px 5px; font-weight: bold; color: #718096; }
+
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid var(--border); border-radius: 10px; box-sizing: border-box; transition: 0.3s; background: white; }
+        input:focus { border-color: var(--primary); outline: none; }
+
+        button {
+            width: 100%; padding: 14px; background: var(--success); color: white; border: none;
+            border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 10px;
+            transition: 0.4s; font-size: 1rem;
+        }
+
+        /* EFEITO VERDE VIVO NO HOVER */
+        button:hover {
+            background: #2f9e59 !important;
+            box-shadow: 0 0 15px rgba(72, 187, 120, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .back-link { display: block; margin-top: 20px; font-size: 0.85rem; color: #718096; text-decoration: none; transition: 0.3s; }
+        .back-link:hover { color: var(--primary); }
     </style>
 </head>
 <body>
 <div class="card">
     <h2>📝 Nova Conta</h2>
-    <input type="text" id="user" placeholder="Usuário">
-    <input type="password" id="pass" placeholder="Senha">
-    <input type="text" id="key" placeholder="Palavra-Chave (Segurança)">
-    <button onclick="cadastrar()">Salvar Cadastro</button>
-    <p><a href="/login" style="font-size: 0.8rem; color: #718096;">Voltar ao Login</a></p>
+
+    <label for="user">Usuário</label>
+    <input type="text" id="user" placeholder="Digite seu usuário">
+
+    <label for="pass">Senha</label>
+    <input type="password" id="pass" placeholder="Crie uma senha">
+
+    <label for="key">Palavra-Chave</label>
+    <input type="text" id="key" placeholder="Para recuperação de conta">
+
+    <button id="btn-cadastrar" onclick="cadastrar()">Salvar Cadastro</button>
+
+    <a href="/login" class="back-link">← Já tenho conta. Ir para Login</a>
 </div>
 
 <script>
+    // FUNÇÃO ENTER: Permite cadastrar ao apertar a tecla Enter em qualquer campo
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            cadastrar();
+        }
+    });
+
     async function cadastrar() {
         const user = document.getElementById('user').value;
         const pass = document.getElementById('pass').value;
         const key = document.getElementById('key').value;
 
+        if(!user || !pass || !key) {
+            alert("Por favor, preencha todos os campos!");
+            return;
+        }
+
+        // Conecta com o seu AuthController.java
         const resp = await fetch('/auth/cadastrar', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -35,6 +85,8 @@
         if(resp.ok) {
             alert("Usuário criado com sucesso!");
             window.location.href = "/login";
+        } else {
+            alert("Erro ao realizar cadastro. Tente outro usuário.");
         }
     }
 </script>
