@@ -11,6 +11,16 @@ O **Cofrinho Pro** é um sistema de gestão de economias que permite o controle 
 * **Segurança e Perfil**: Cadastro de usuários, edição de senha criptografada e opção de exclusão de conta.
 * **UX Avançada**: Atalhos por teclado (tecla Enter), efeitos de hover dinâmicos e suporte a **Modo Escuro/Claro**.
 
+##  Visual do Sistema
+
+### Dashboard Principal
+![Dashboard](./screenshots/dashboard.png)
+*Interface com suporte a Modo Escuro e conversão de moedas em tempo real.*
+
+### Persistência de Dados
+![Banco de Dados](./screenshots/banco.png)
+*Estrutura de tabelas e dados armazenados no PostgreSQL.*
+
 ##  Tecnologias Utilizadas
 
 * **Backend**: Java com Spring Boot.
