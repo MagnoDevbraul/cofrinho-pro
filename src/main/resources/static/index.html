@@ -5,7 +5,9 @@
     <title>Cofrinho Pro - Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Variáveis de Cores e Temas - RESTAURADO */
+        /* SISTEMA DE TEMAS E VARIÁVEIS CSS
+           Facilita a manutenção e a troca dinâmica entre Modo Claro e Escuro. (Light e Dark)
+        */
         :root {
             --bg: #f0f2f5; --card: #ffffff; --primary: #3182ce;
             --success: #48bb78; --danger: #f56565; --text: #2d3748;
@@ -19,6 +21,8 @@
         }
 
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; color: var(--text); transition: 0.3s; }
+
+        /* Layout Principal utilizando Grid para separar a Sidebar do Conteúdo */
         .main-container { width: 100%; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 280px 1fr; gap: 20px; }
 
         .card { background: var(--card); border-radius: 20px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-bottom: 20px; border: none; transition: 0.3s; }
@@ -28,7 +32,7 @@
         .nav-btn { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid var(--border); border-radius: 50px; background: var(--input-bg); cursor: pointer; transition: 0.3s; font-weight: 600; color: var(--text); }
         .nav-btn:hover { border-color: var(--primary); color: var(--primary); }
 
-        /* BOTÕES ESPECIAIS COM HOVER VERMELHO VIVO */
+        /* Estilização de botões críticos com efeito visual de destaque */
         .btn-logout:hover, .btn-danger-vivid:hover {
             background: #ff0000 !important;
             color: white !important;
@@ -40,7 +44,7 @@
         .btn-coin { border: none; border-radius: 12px; color: white; padding: 12px 5px; font-weight: bold; cursor: pointer; font-size: 0.7rem; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 3px; }
         .btn-coin:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
-        /* Cores das Moedas */
+        /* Mapeamento visual das cores por tipo de moeda */
         .c-real { background: #3182ce; } .c-dolar { background: #718096; } .c-euro { background: #48bb78; }
         .c-iene { background: #f56565; } .c-yuan { background: #ecc94b; } .c-rupia { background: #9f7aea; }
         .c-won { background: #ed8936; } .c-shekel { background: #4fd1c5; }
@@ -137,8 +141,11 @@
 </div>
 
 <script>
+    /* LÓGICA JAVASCRIPT - GERENCIAMENTO DE ESTADO E CHAMADAS API
+    */
     let selecionado = 0, gRosca, gBarra, moedasGlobais = [];
 
+    // Taxas de conversão fixas para cálculo de exibição visual
     const configMoedas = {
         'Real':   { cor: 'c-real',   simbolo: 'R$', taxa: 1, hex: '#3182ce' },
         'Dolar':  { cor: 'c-dolar',  simbolo: 'U$', taxa: 0.20, hex: '#718096' },
@@ -150,7 +157,9 @@
         'Shekel': { cor: 'c-shekel', simbolo: '₪',  taxa: 0.75, hex: '#4fd1c5' }
     };
 
-    // ATALHO ENTER - RESTAURADO E COMPLETO
+    /**
+     * MELHORIA DE UX: Atalhos de teclado para confirmação rápida
+     */
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             const el = document.activeElement.id;
@@ -160,6 +169,9 @@
         }
     });
 
+    /**
+     * Alterna entre Modo Claro e Escuro salvando a preferência no LocalStorage
+     */
     function toggleTheme() {
         const doc = document.documentElement;
         const isDark = doc.getAttribute('data-theme') === 'dark';
@@ -172,6 +184,9 @@
 
     if (localStorage.getItem('theme') === 'dark') toggleTheme();
 
+    /**
+     * CARREGAMENTO INICIAL: Busca dados do banco de dados PostgreSQL via endpoints do Spring
+     */
     async function carregar() {
         try {
             const rM = await fetch('/moedas/total');
@@ -193,7 +208,7 @@
                         <td style="opacity: 0.6; font-size:0.7rem">${new Date(t.dataHora).toLocaleString('pt-BR')}</td>
                     </tr>`;
             });
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("Erro na comunicação com a API:", e); }
     }
 
     function renderizarBotoes() {
@@ -206,7 +221,9 @@
         });
     }
 
-    // NOVAS FUNÇÕES DE PERFIL (RESTAURADAS E CONFIGURADAS PARA /AUTH)
+    /**
+     * INTEGRAÇÃO COM AUTH: Edição e Exclusão via requisições assíncronas
+     */
     async function salvarEdicao() {
         const username = document.getElementById('edit-username').value;
         const password = document.getElementById('edit-password').value;
@@ -252,6 +269,9 @@
         }
     }
 
+    /**
+     * VISUALIZAÇÃO DE DADOS: Renderização de gráficos usando Chart.js
+     */
     function atualizarGraficos(dados) {
         const labels = dados.map(m => m.nome);
         const values = dados.map(m => m.valor);
@@ -271,9 +291,14 @@
         });
     }
 
+    /**
+     * FUNÇÕES AUXILIARES: Máscara de moeda e controle de fluxo
+     */
     function preparar(id) { selecionado = id; document.getElementById('area-valor').classList.remove('hidden'); document.getElementById('campo-valor').focus(); }
     function mask(i) { let v = i.value.replace(/\D/g,''); v = (v/100).toFixed(2).replace(".", ","); i.value = v; }
     function sair() { window.location.href = '/login'; }
+
+    // Operações de Depósito e Retirada
     async function depositar() { const v = document.getElementById('campo-valor').value.replace(',','.'); if(!v || v == "0.00") return; await fetch(`/moedas/adicionar/${selecionado}?valor=${v}`); location.reload(); }
     async function executarRemocao() { const id = document.getElementById('id-remover').value; const v = document.getElementById('valor-remover').value.replace(',','.'); if(!id || !v || v == "0.00") return; await fetch(`/moedas/remover-valores/${id}?valor=${v}`); location.reload(); }
 

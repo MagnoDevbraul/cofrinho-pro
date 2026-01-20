@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <title>Redefinir Senha - Cofrinho Pro</title>
     <style>
+        /* ESTILIZAÇÃO DE ALERTA
+           O uso do tom vermelho (#e53e3e) comunica visualmente que esta
+           é uma área de alteração sensível de dados.
+        */
         body { font-family: 'Segoe UI', sans-serif; background: #e9eef2; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 320px; text-align: center; }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e0; border-radius: 8px; box-sizing: border-box; }
@@ -13,23 +17,41 @@
 <body>
 <div class="card">
     <h2>🔑 Nova Senha</h2>
+
     <input type="text" id="user" placeholder="Seu Utilizador">
     <input type="text" id="key" placeholder="Sua Palavra-Chave">
     <input type="password" id="newPass" placeholder="Nova Senha">
+
     <button onclick="redefinir()">Alterar Senha</button>
+
     <p><a href="/login" style="font-size: 0.8rem; color: #718096; text-decoration: none;">Voltar ao Login</a></p>
 </div>
 
 <script>
+    /**
+     * LÓGICA DE RECUPERAÇÃO DE CONTA
+     * Realiza a comunicação com o endpoint de redefinição no AuthController.
+     */
     async function redefinir() {
         const user = document.getElementById('user').value;
         const key = document.getElementById('key').value;
         const pass = document.getElementById('newPass').value;
 
-        const resp = await fetch(`/auth/redefinir?username=${user}&palavraChave=${key}&novaSenha=${pass}`, {method: 'POST'});
+        /* Envio via Query Params para o método POST.
+           Nota técnica: Em sistemas de alta produção, esses dados seriam
+           enviados no corpo (body) para maior proteção via HTTPS.
+        */
+        const resp = await fetch(`/auth/redefinir?username=${user}&palavraChave=${key}&novaSenha=${pass}`, {
+            method: 'POST'
+        });
+
         const msg = await resp.text();
         alert(msg);
-        if(msg.includes("Alterada")) window.location.href = "/login";
+
+        // Se o backend retornar sucesso, redireciona para o login
+        if(msg.includes("Alterada")) {
+            window.location.href = "/login";
+        }
     }
 </script>
 </body>
