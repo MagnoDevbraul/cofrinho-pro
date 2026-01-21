@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro - Cofrinho Pro</title>
+    <style>
+        /* DESIGN SYSTEM
+           Mantém a consistência visual com o restante da aplicação utilizando variáveis CSS.
+        */
+        :root {
+            --bg: #f0f2f5; --card: #ffffff; --primary: #3182ce;
+            --success: #48bb78; --text: #2d3748; --border: #e2e8f0;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: var(--text); }
+
+        .card { background: var(--card); padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 350px; text-align: center; }
+
+        h2 { margin-bottom: 25px; opacity: 0.8; }
+
+        /* ACESSIBILIDADE E SEO
+           Labels visíveis ajudam no preenchimento e eliminam avisos de inspeção do IntelliJ/HTML5.
+        */
+        label { display: block; text-align: left; font-size: 0.8rem; margin: 5px 0 2px 5px; font-weight: bold; color: #718096; }
+
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid var(--border); border-radius: 10px; box-sizing: border-box; transition: 0.3s; background: white; }
+        input:focus { border-color: var(--primary); outline: none; }
+
+        button {
+            width: 100%; padding: 14px; background: var(--success); color: white; border: none;
+            border-radius: 50px; cursor: pointer; font-weight: bold; margin-top: 10px;
+            transition: 0.4s; font-size: 1rem;
+        }
+
+        /* FEEDBACK VISUAL (Hover State)
+           Indica interatividade e melhora a percepção de resposta do sistema.
+        */
+        button:hover {
+            background: #2f9e59 !important;
+            box-shadow: 0 0 15px rgba(72, 187, 120, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .back-link { display: block; margin-top: 20px; font-size: 0.85rem; color: #718096; text-decoration: none; transition: 0.3s; }
+        .back-link:hover { color: var(--primary); }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>📝 Nova Conta</h2>
+
+    <label for="user">Usuário</label>
+    <input type="text" id="user" placeholder="Digite seu usuário">
+
+    <label for="pass">Senha</label>
+    <input type="password" id="pass" placeholder="Crie uma senha">
+
+    <label for="key">Palavra-Chave</label>
+    <input type="text" id="key" placeholder="Para recuperação de conta">
+
+    <button id="btn-cadastrar" onclick="cadastrar()">Salvar Cadastro</button>
+
+    <a href="/login" class="back-link">← Já tenho conta. Ir para Login</a>
+</div>
+
+<script>
+    /**
+     * MELHORIA DE UX: Atalho de teclado
+     * Adiciona suporte à tecla 'Enter' para agilizar o processo de cadastro.
+     */
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            cadastrar();
+        }
+    });
+
+    /**
+     * INTEGRAÇÃO COM BACKEND (Fetch API)
+     * Captura os dados da tela e envia uma requisição POST para o AuthController.
+     */
+    async function cadastrar() {
+        const user = document.getElementById('user').value;
+        const pass = document.getElementById('pass').value;
+        const key = document.getElementById('key').value;
+
+        // Validação simples de Front-end (Campos obrigatórios)
+        if(!user || !pass || !key) {
+            alert("Por favor, preencha todos os campos!");
+            return;
+        }
+
+        /* Envio assíncrono para o endpoint '/auth/cadastrar'
+           O corpo da requisição segue o formato esperado pela entidade Usuario.java
+        */
+        const resp = await fetch('/auth/cadastrar', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({username: user, password: pass, palavraChave: key})
+        });
+
+        if(resp.ok) {
+            alert("Usuário criado com sucesso!");
+            window.location.href = "/login"; // Redirecionamento após sucesso
+        } else {
+            // Caso o username já esteja em uso ou ocorra erro no servidor
+            alert("Erro ao realizar cadastro. Tente outro usuário.");
+        }
+    }
+</script>
+</body>
+</html>
