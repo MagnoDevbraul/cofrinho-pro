@@ -63,8 +63,8 @@ Este projeto foi desenvolvido utilizando o **Java 25**, aplicando conceitos avan
     * Rode a classe `CofrinhoApiApplication` através do IntelliJ ou via terminal: `./mvnw spring-boot:run`
 4.  **Acesso**:
     * Abra o navegador em `http://localhost:8080/login`.
-    **usuário**: `Cofre-pro`
-    **Senha**: `1500`
+    * **usuário**: `Cofre-pro`
+    * **Senha**: `1500`
 
 > **Dica para Teste**: Cadastre-se na primeira execução ou use o usuário criado durante o setup para explorar o dashboard.
 
