@@ -1,4 +1,4 @@
-# 💰 Cofrinho Pro - Dashboard Financeiro Multi-Moedas
+#  Cofrinho Pro - Dashboard Financeiro Multi-Moedas
 
 ![Java](https://img.shields.io/badge/Java-25-orange?style=for-the-badge&logo=openjdk)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-brightgreen?style=for-the-badge&logo=spring-boot)
@@ -8,7 +8,7 @@ O **Cofrinho Pro** é um sistema de gestão de economias que permite o controle 
 
 ---
 
-## 🧬 Diferenciais Técnicos (Arquitetura)
+##  Diferenciais Técnicos (Arquitetura)
 
 Este projeto foi desenvolvido utilizando o **Java 25**, aplicando conceitos avançados de Engenharia de Software:
 
@@ -18,7 +18,7 @@ Este projeto foi desenvolvido utilizando o **Java 25**, aplicando conceitos avan
 
 ---
 
-## ✨ Funcionalidades
+##  Funcionalidades
 
 * **Gestão de Moedas**: Depósito e retirada de valores com IDs únicos por moeda.
 * **Conversão Automática**: Exibição do valor na moeda original e o equivalente em Real (R$).
@@ -29,7 +29,7 @@ Este projeto foi desenvolvido utilizando o **Java 25**, aplicando conceitos avan
 
 ---
 
-## 🖼️ Visual do Sistema
+##  Visual do Sistema
 
 ### Dashboard Principal
 ![Dashboard](./screenshots/dashboard.png)
@@ -43,7 +43,7 @@ Este projeto foi desenvolvido utilizando o **Java 25**, aplicando conceitos avan
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+##  Tecnologias Utilizadas
 
 * **Backend**: Java 25, Spring Boot 3.x, Spring Data JPA.
 * **Frontend**: HTML5, CSS3 (Variáveis Modernas), JavaScript Vanilla, Thymeleaf.
@@ -52,7 +52,7 @@ Este projeto foi desenvolvido utilizando o **Java 25**, aplicando conceitos avan
 
 ---
 
-## ⚙️ Como Rodar o Projeto
+##  Como Rodar o Projeto
 
 1.  **Configurar o Banco de Dados**:
     * Certifique-se de ter o PostgreSQL instalado.
@@ -70,7 +70,7 @@ Este projeto foi desenvolvido utilizando o **Java 25**, aplicando conceitos avan
 
 ---
 
-## 🗺️ Roadmap de Evolução
+##  Roadmap de Evolução
 
 1.  **Integração com API de Câmbio**: Atualização das taxas (Dólar, Euro, etc.) via API externa em tempo real.
 2.  **Dashboard de Metas**: Sistema de progresso para objetivos de economia (ex: "Viagem").
