@@ -1,82 +1,85 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Usuario;
+import com.example.demo.model.*; // Importa todas as moedas (Real, Dolar, etc)
+import com.example.demo.repository.MoedaRepository; // Injeção necessária
 import com.example.demo.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+import java.util.List;
 
-/**
- * Controller responsável pela autenticação e gestão de usuários.
- * Utiliza @RestController para retornar respostas diretas (Strings/JSON).
- */
 @RestController
-@RequestMapping("/auth") // Define a rota base para as requisições de autenticação
+@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
-    private UsuarioRepository repository; // Injeção do repositório para acesso ao PostgreSQL
+    private UsuarioRepository repository;
 
     @Autowired
-    private BCryptPasswordEncoder encoder; // Utilitário para criptografia das senhas (BCrypt)
+    private MoedaRepository moedaRepository; // Repositório para salvar o kit inicial
 
-    /**
-     * Endpoint para cadastrar um novo usuário.
-     * Criptografa a senha antes de salvar no banco de dados.
-     */
+    @Autowired
+    private BCryptPasswordEncoder encoder;
+
     @PostMapping("/cadastrar")
-    public String cadastrar(@RequestBody Usuario usuario) {
-        // Aplica o hash na senha para que ela não seja salva como texto puro
+    public ResponseEntity<String> cadastrar(@Valid @RequestBody Usuario usuario) {
+        // 1. Salva o usuário primeiro
         usuario.setPassword(encoder.encode(usuario.getPassword()));
-        repository.save(usuario); // Persiste o usuário no PostgreSQL
-        return "Sucesso";
+        Usuario usuarioSalvo = repository.save(usuario);
+
+        // 2. Cria as 8 moedas da sua imagem
+        List<Moeda> kit = List.of(
+                new Real(0.0), new Dolar(0.0), new Euro(0.0),
+                new Iene(0.0), new Yuan(0.0), new Rupia(0.0),
+                new Won(0.0), new Shekel(0.0)
+        );
+
+        // 3. Vincula cada moeda ao usuário e salva no banco
+        for (Moeda m : kit) {
+            m.setUsuario(usuarioSalvo);
+            m.setNome(m.getClass().getSimpleName());
+            moedaRepository.save(m);
+        }
+
+        return ResponseEntity.ok("Usuário e Carteira criados com sucesso!");
     }
 
-    /**
-     * Endpoint para recuperação de conta via palavra-chave.
-     * Verifica se o username e a palavra-chave coincidem antes de alterar a senha.
-     */
+    @GetMapping("/listar")
+    public ResponseEntity<java.util.List<Usuario>> listarTodos() {
+        return ResponseEntity.ok(repository.findAll());
+    }
+
     @PostMapping("/redefinir")
     public String redefinir(@RequestParam String username, @RequestParam String palavraChave, @RequestParam String novaSenha) {
         return repository.findByUsername(username)
-                .filter(u -> u.getPalavraChave().equals(palavraChave)) // Validação de segurança extra
+                .filter(u -> u.getPalavraChave().equals(palavraChave))
                 .map(u -> {
-                    u.setPassword(encoder.encode(novaSenha)); // Criptografa a nova senha
-                    repository.save(u); // Atualiza os dados no banco
+                    u.setPassword(encoder.encode(novaSenha));
+                    repository.save(u);
                     return "Senha Alterada!";
                 }).orElse("Dados incorretos!");
     }
 
-    /**
-     * MODO EDIÇÃO: Permite ao usuário atualizar suas informações de perfil.
-     * Localiza o usuário pelo username e atualiza os campos necessários.
-     */
     @PutMapping("/editar")
     public String editar(@RequestBody Usuario novosDados) {
         return repository.findByUsername(novosDados.getUsername())
                 .map(u -> {
-                    // Atualiza a senha garantindo a nova criptografia
                     u.setPassword(encoder.encode(novosDados.getPassword()));
-
-                    // Atualiza a palavra-chave, caso um novo valor tenha sido enviado
                     if(novosDados.getPalavraChave() != null) {
                         u.setPalavraChave(novosDados.getPalavraChave());
                     }
-
-                    repository.save(u); // Salva as alterações no PostgreSQL
+                    repository.save(u);
                     return "Perfil Atualizado!";
                 }).orElse("Usuário não encontrado!");
     }
 
-    /**
-     * MODO EXCLUSÃO: Remove permanentemente o usuário do sistema.
-     * Importante para conformidade com leis de privacidade (LGPD).
-     */
     @DeleteMapping("/excluir")
     public String excluir(@RequestParam String username) {
         return repository.findByUsername(username)
                 .map(u -> {
-                    repository.delete(u); // Remove o registro da tabela de usuários
+                    repository.delete(u);
                     return "Conta excluída com sucesso!";
                 }).orElse("Erro ao excluir: Usuário não encontrado.");
     }

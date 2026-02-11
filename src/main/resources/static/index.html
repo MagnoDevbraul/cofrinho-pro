@@ -5,58 +5,29 @@
     <title>Cofrinho Pro - Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* SISTEMA DE TEMAS E VARIÁVEIS CSS
-           Facilita a manutenção e a troca dinâmica entre Modo Claro e Escuro. (Light e Dark)
-        */
-        :root {
-            --bg: #f0f2f5; --card: #ffffff; --primary: #3182ce;
-            --success: #48bb78; --danger: #f56565; --text: #2d3748;
-            --border: #e2e8f0; --input-bg: #ffffff;
-        }
-
-        [data-theme="dark"] {
-            --bg: #1a202c; --card: #2d3748; --primary: #63b3ed;
-            --success: #68d391; --danger: #feb2b2; --text: #f7fafc;
-            --border: #4a5568; --input-bg: #1a202c;
-        }
-
+        /* (Seu CSS permanece o mesmo, mantido por brevidade) */
+        :root { --bg: #f0f2f5; --card: #ffffff; --primary: #3182ce; --success: #48bb78; --danger: #f56565; --text: #2d3748; --border: #e2e8f0; --input-bg: #ffffff; }
+        [data-theme="dark"] { --bg: #1a202c; --card: #2d3748; --primary: #63b3ed; --success: #68d391; --danger: #feb2b2; --text: #f7fafc; --border: #4a5568; --input-bg: #1a202c; }
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; color: var(--text); transition: 0.3s; }
-
-        /* Layout Principal utilizando Grid para separar a Sidebar do Conteúdo */
         .main-container { width: 100%; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 280px 1fr; gap: 20px; }
-
         .card { background: var(--card); border-radius: 20px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-bottom: 20px; border: none; transition: 0.3s; }
         h3 { font-size: 0.85rem; margin-top: 0; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; text-transform: uppercase; opacity: 0.8; }
-
         .theme-toggle { margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 0.9rem; color: var(--primary); }
         .nav-btn { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid var(--border); border-radius: 50px; background: var(--input-bg); cursor: pointer; transition: 0.3s; font-weight: 600; color: var(--text); }
         .nav-btn:hover { border-color: var(--primary); color: var(--primary); }
-
-        /* Estilização de botões críticos com efeito visual de destaque */
-        .btn-logout:hover, .btn-danger-vivid:hover {
-            background: #ff0000 !important;
-            color: white !important;
-            border-color: #ff0000 !important;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
-        }
-
+        .btn-logout:hover, .btn-danger-vivid:hover { background: #ff0000 !important; color: white !important; border-color: #ff0000 !important; box-shadow: 0 0 20px rgba(255, 0, 0, 0.6); }
         .coin-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
         .btn-coin { border: none; border-radius: 12px; color: white; padding: 12px 5px; font-weight: bold; cursor: pointer; font-size: 0.7rem; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 3px; }
         .btn-coin:hover { transform: translateY(-2px); filter: brightness(1.1); }
-
-        /* Mapeamento visual das cores por tipo de moeda */
         .c-real { background: #3182ce; } .c-dolar { background: #718096; } .c-euro { background: #48bb78; }
         .c-iene { background: #f56565; } .c-yuan { background: #ecc94b; } .c-rupia { background: #9f7aea; }
         .c-won { background: #ed8936; } .c-shekel { background: #4fd1c5; }
-
         input { width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 10px; margin: 5px 0; box-sizing: border-box; background: var(--input-bg); color: var(--text); }
         .btn-action { background: var(--primary); color: white; padding: 12px; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 5px; }
-
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; opacity: 0.6; font-size: 0.7rem; padding-bottom: 10px; }
         td { padding: 12px 5px; font-size: 0.85rem; border-bottom: 1px solid var(--border); color: var(--text); }
         .badge { padding: 3px 8px; border-radius: 50px; font-size: 0.65rem; color: #fff !important; font-weight: bold; }
-
         .hidden { display: none; }
         .row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .detalhe-item { padding: 8px; background: var(--bg); border-radius: 8px; margin-bottom: 5px; font-size: 0.8rem; display: flex; justify-content: space-between; }
@@ -70,27 +41,22 @@
             <div class="theme-toggle" onclick="toggleTheme()">
                 <span id="theme-icon">🌙</span> <span id="theme-text">Modo Escuro</span>
             </div>
-            <h3>🏦 Carteira</h3>
+            <h3> Carteira</h3>
             <button class="nav-btn" onclick="toggleTotal()">Saldo Total (R$)</button>
             <div id="resultado-total" class="hidden" style="padding: 10px; margin-bottom: 10px; background: rgba(49, 130, 206, 0.1); text-align:center; font-weight:bold; color: var(--primary); border-radius: 10px;"></div>
 
             <button class="nav-btn" onclick="toggleDetalhes()">Ver Detalhes</button>
             <button class="nav-btn" onclick="document.getElementById('area-remocao').classList.toggle('hidden')">Retirar Valor</button>
-
             <button class="nav-btn" onclick="document.getElementById('area-perfil').classList.toggle('hidden')" style="border-color: var(--primary); color: var(--primary);">⚙️ Perfil / Editar</button>
-
             <hr style="border: 0; border-top: 1px solid var(--border); margin: 15px 0;">
             <button class="nav-btn btn-logout" onclick="sair()">🚪 Sair</button>
         </div>
 
         <div id="area-perfil" class="card hidden">
             <h3>Editar Usuário</h3>
-            <label for="edit-username" style="font-size: 0.7rem; font-weight: bold">Username Atual</label>
             <input type="text" id="edit-username" placeholder="Username">
-            <label for="edit-password" style="font-size: 0.7rem; font-weight: bold">Nova Senha</label>
             <input type="password" id="edit-password" placeholder="Nova Senha">
             <button class="btn-action" onclick="salvarEdicao()">Salvar</button>
-            <button class="btn-action btn-danger-vivid" style="background:#333; margin-top:10px" onclick="excluirConta()">Excluir Conta</button>
         </div>
 
         <div id="card-detalhes" class="card hidden">
@@ -141,65 +107,34 @@
 </div>
 
 <script>
-    /* LÓGICA JAVASCRIPT - GERENCIAMENTO DE ESTADO E CHAMADAS API
-    */
+    const API_URL = "http://localhost:8080/moedas"; // URL Base corrigida
     let selecionado = 0, gRosca, gBarra, moedasGlobais = [];
 
-    // Taxas de conversão fixas para cálculo de exibição visual
     const configMoedas = {
-        'Real':   { cor: 'c-real',   simbolo: 'R$', taxa: 1, hex: '#3182ce' },
-        'Dolar':  { cor: 'c-dolar',  simbolo: 'U$', taxa: 0.20, hex: '#718096' },
-        'Euro':   { cor: 'c-euro',   simbolo: '€',  taxa: 0.18, hex: '#48bb78' },
-        'Iene':   { cor: 'c-iene',   simbolo: '¥',  taxa: 28.5, hex: '#f56565' },
-        'Yuan':   { cor: 'c-yuan',   simbolo: '¥',  taxa: 1.45, hex: '#ecc94b' },
-        'Rupia':  { cor: 'c-rupia',  simbolo: '₹',  taxa: 16.5, hex: '#9f7aea' },
-        'Won':    { cor: 'c-won',    simbolo: '₩',  taxa: 260, hex: '#ed8936' },
-        'Shekel': { cor: 'c-shekel', simbolo: '₪',  taxa: 0.75, hex: '#4fd1c5' }
+        'Real':   { cor: 'c-real',   simbolo: 'R$', hex: '#3182ce' },
+        'Dolar':  { cor: 'c-dolar',  simbolo: 'U$', hex: '#718096' },
+        'Euro':   { cor: 'c-euro',   simbolo: '€',  hex: '#48bb78' },
+        'Iene':   { cor: 'c-iene',   simbolo: '¥',  hex: '#f56565' },
+        'Yuan':   { cor: 'c-yuan',   simbolo: '¥',  hex: '#ecc94b' },
+        'Rupia':  { cor: 'c-rupia',  simbolo: '₹',  hex: '#9f7aea' },
+        'Won':    { cor: 'c-won',    simbolo: '₩',  hex: '#ed8936' },
+        'Shekel': { cor: 'c-shekel', simbolo: '₪',  hex: '#4fd1c5' },
+        'Ganhou': { cor: 'c-won',    simbolo: '₩',  hex: '#ed8936' } // Suporte ao tradutor
     };
 
-    /**
-     * MELHORIA DE UX: Atalhos de teclado para confirmação rápida
-     */
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            const el = document.activeElement.id;
-            if (el === 'campo-valor') depositar();
-            if (el === 'valor-remover' || el === 'id-remover') executarRemocao();
-            if (el === 'edit-password') salvarEdicao();
-        }
-    });
-
-    /**
-     * Alterna entre Modo Claro e Escuro salvando a preferência no LocalStorage
-     */
-    function toggleTheme() {
-        const doc = document.documentElement;
-        const isDark = doc.getAttribute('data-theme') === 'dark';
-        doc.setAttribute('data-theme', isDark ? 'light' : 'dark');
-        document.getElementById('theme-icon').innerText = isDark ? '🌙' : '☀️';
-        document.getElementById('theme-text').innerText = isDark ? 'Modo Escuro' : 'Modo Claro';
-        localStorage.setItem('theme', isDark ? 'light' : 'dark');
-        if (moedasGlobais.length > 0) atualizarGraficos(moedasGlobais);
-    }
-
-    if (localStorage.getItem('theme') === 'dark') toggleTheme();
-
-    /**
-     * CARREGAMENTO INICIAL: Busca dados do banco de dados PostgreSQL via endpoints do Spring
-     */
     async function carregar() {
         try {
-            const rM = await fetch('/moedas/total');
+            const rM = await fetch(`${API_URL}/total`);
             moedasGlobais = await rM.json();
             renderizarBotoes();
             atualizarGraficos(moedasGlobais);
 
-            const rH = await fetch('/moedas/historico');
+            const rH = await fetch(`${API_URL}/historico`);
             const transacoes = await rH.json();
             const corpo = document.getElementById('tabela-corpo');
             corpo.innerHTML = "";
             transacoes.slice(0, 8).forEach(t => {
-                const isDep = t.tipo === "DEPÓSITO";
+                const isDep = t.tipo === "DEPÓSITO" || t.tipo === "CRIAÇÃO";
                 corpo.innerHTML += `
                     <tr>
                         <td><b>${t.moedaNome}</b></td>
@@ -215,42 +150,21 @@
         const grid = document.getElementById('grid-moedas');
         grid.innerHTML = "";
         moedasGlobais.forEach(m => {
-            const conf = configMoedas[m.nome] || {cor: 'c-real', simbolo: '$', taxa: 1};
-            const valorNaMoeda = m.valor * conf.taxa;
-            grid.innerHTML += `<button class="btn-coin ${conf.cor}" onclick="preparar(${m.id})"><span style="font-size:0.6rem; opacity:0.8">ID: ${m.id}</span><span>${m.nome.toUpperCase()}</span><span class="coin-val">${conf.simbolo} ${valorNaMoeda.toFixed(2)}</span></button>`;
+            const conf = configMoedas[m.nome] || {cor: 'c-real', simbolo: '$'};
+            grid.innerHTML += `
+                <button class="btn-coin ${conf.cor}" onclick="preparar(${m.id})">
+                    <span style="font-size:0.6rem; opacity:0.8">ID: ${m.id}</span>
+                    <span>${m.nome.toUpperCase()}</span>
+                    <span class="coin-val">${conf.simbolo} ${m.valorOriginal.toFixed(2)}</span>
+                </button>`;
         });
-    }
-
-    /**
-     * INTEGRAÇÃO COM AUTH: Edição e Exclusão via requisições assíncronas
-     */
-    async function salvarEdicao() {
-        const username = document.getElementById('edit-username').value;
-        const password = document.getElementById('edit-password').value;
-        if(!username || !password) return alert("Preencha username e senha!");
-        const resp = await fetch('/auth/editar', {
-            method: 'PUT',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({username, password})
-        });
-        alert(await resp.text());
-        if(resp.ok) location.reload();
-    }
-
-    async function excluirConta() {
-        const user = prompt("Digite seu username para confirmar exclusão:");
-        if(user && confirm("CERTEZA ABSOLUTA? Seus dados serão perdidos.")) {
-            const resp = await fetch(`/auth/excluir?username=${user}`, { method: 'DELETE' });
-            alert(await resp.text());
-            window.location.href = '/login';
-        }
     }
 
     function toggleTotal() {
         const div = document.getElementById('resultado-total');
         div.classList.toggle('hidden');
         if (!div.classList.contains('hidden')) {
-            const total = moedasGlobais.reduce((acc, m) => acc + m.valor, 0);
+            const total = moedasGlobais.reduce((acc, m) => acc + m.valorEmReal, 0); // Usa o valor convertido pelo Java!
             div.innerText = "Total: R$ " + total.toLocaleString('pt-BR', {minimumFractionDigits: 2});
         }
     }
@@ -262,45 +176,56 @@
             const lista = document.getElementById('lista-detalhes');
             lista.innerHTML = "";
             moedasGlobais.forEach(m => {
-                const conf = configMoedas[m.nome] || {simbolo: '$', taxa: 1};
-                const valorLocal = m.valor * conf.taxa;
-                lista.innerHTML += `<div class="detalhe-item"><span>${m.nome}:</span><b>${conf.simbolo} ${valorLocal.toFixed(2)}</b></div>`;
+                const conf = configMoedas[m.nome] || {simbolo: '$'};
+                lista.innerHTML += `<div class="detalhe-item"><span>${m.nome}:</span><b>R$ ${m.valorEmReal.toFixed(2)}</b></div>`;
             });
         }
     }
 
-    /**
-     * VISUALIZAÇÃO DE DADOS: Renderização de gráficos usando Chart.js
-     */
     function atualizarGraficos(dados) {
         const labels = dados.map(m => m.nome);
-        const values = dados.map(m => m.valor);
+        const values = dados.map(m => m.valorEmReal); // Gráfico baseado em Real
         const colors = labels.map(l => configMoedas[l]?.hex || '#ccc');
         const textColor = document.documentElement.getAttribute('data-theme') === 'dark' ? '#f7fafc' : '#2d3748';
-        Chart.defaults.color = textColor;
 
         if(gBarra) gBarra.destroy();
         gBarra = new Chart(document.getElementById('graficoBarra'), {
             type: 'bar', data: { labels, datasets:[{ data: values, backgroundColor: colors, borderRadius: 5 }] },
-            options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { color: textColor } }, y: { ticks: { color: textColor } } } }
+            options: { plugins: { legend: { display: false } } }
         });
         if(gRosca) gRosca.destroy();
         gRosca = new Chart(document.getElementById('graficoRosca'), {
-            type: 'doughnut', data: { labels, datasets:[{ data: values, backgroundColor: colors, borderWeight: 0 }] },
-            options: { cutout: '70%', plugins: { legend: { position: 'bottom', labels: { color: textColor, boxWidth: 10, font: { size: 10 } } } } }
+            type: 'doughnut', data: { labels, datasets:[{ data: values, backgroundColor: colors }] },
+            options: { cutout: '70%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
         });
     }
 
-    /**
-     * FUNÇÕES AUXILIARES: Máscara de moeda e controle de fluxo
-     */
     function preparar(id) { selecionado = id; document.getElementById('area-valor').classList.remove('hidden'); document.getElementById('campo-valor').focus(); }
     function mask(i) { let v = i.value.replace(/\D/g,''); v = (v/100).toFixed(2).replace(".", ","); i.value = v; }
-    function sair() { window.location.href = '/login'; }
+    function sair() { window.location.href = 'login.html'; }
 
-    // Operações de Depósito e Retirada
-    async function depositar() { const v = document.getElementById('campo-valor').value.replace(',','.'); if(!v || v == "0.00") return; await fetch(`/moedas/adicionar/${selecionado}?valor=${v}`); location.reload(); }
-    async function executarRemocao() { const id = document.getElementById('id-remover').value; const v = document.getElementById('valor-remover').value.replace(',','.'); if(!id || !v || v == "0.00") return; await fetch(`/moedas/remover-valores/${id}?valor=${v}`); location.reload(); }
+    async function depositar() {
+        const v = document.getElementById('campo-valor').value.replace(',','.');
+        if(!v || v == "0.00") return;
+        await fetch(`${API_URL}/adicionar/${selecionado}?valor=${v}`, { method: 'POST' });
+        location.reload();
+    }
+
+    async function executarRemocao() {
+        const id = document.getElementById('id-remover').value;
+        const v = document.getElementById('valor-remover').value.replace(',','.');
+        if(!id || !v || v == "0.00") return;
+        await fetch(`${API_URL}/remover-valores/${id}?valor=${v}`, { method: 'POST' });
+        location.reload();
+    }
+
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const isDark = doc.getAttribute('data-theme') === 'dark';
+        doc.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        document.getElementById('theme-icon').innerText = isDark ? '🌙' : '☀️';
+        localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    }
 
     window.onload = carregar;
 </script>

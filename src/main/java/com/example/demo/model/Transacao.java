@@ -28,6 +28,14 @@ public class Transacao {
     // Registro temporal preciso (Data e Hora) da ocorrência
     private LocalDateTime dataHora;
 
+    //criação de tabela "usuario_id", automaticamente no PostegreSQL
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
+
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+
     /**
      * Construtor padrão exigido pelo JPA para persistência.
      */

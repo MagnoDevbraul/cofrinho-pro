@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.Customizer;
 
 /**
  * CONFIGURAÇÃO DE SEGURANÇA (Spring Security)
@@ -34,39 +35,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // Desabilita CSRF para facilitar a integração com APIs REST e chamadas Fetch/AJAX
-                .csrf(AbstractHttpConfigurer::disable)
-
+                .csrf(csrf -> csrf.disable()) // ESSENCIAL: Permite que o POST funcione no Swagger
                 .authorizeHttpRequests(auth -> auth
-                        /* PÁGINAS PÚBLICAS:
-                           Permite acesso sem login para telas de entrada, arquivos estáticos
-                           (CSS/JS) e os endpoints da API de autenticação.
-                        */
-                        .requestMatchers("/login", "/cadastro", "/login.html", "/cadastro.html", "/css/**", "/js/**", "/auth/**").permitAll()
-
-                        /* RESTRITO:
-                           Qualquer outra rota (como o Dashboard /index.html) exige que o usuário esteja logado.
-                        */
-                        .anyRequest().authenticated()
+                        .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .anyRequest().authenticated() // Exige login para o MoedaController
                 )
-
-                /* CONFIGURAÇÃO DE LOGIN FORMULÁRIO
-                   Define o comportamento da tela de login customizada.
-                */
-                .formLogin(form -> form
-                        .loginPage("/login")             // Rota da nossa tela bonita de login
-                        .loginProcessingUrl("/login")    // URL que o Spring intercepta para validar
-                        .defaultSuccessUrl("/index.html", true) // Onde o usuário cai após logar
-                        .permitAll()
-                )
-
-                /* CONFIGURAÇÃO DE LOGOUT
-                   Garante que a sessão seja encerrada e o usuário redirecionado com segurança.
-                */
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/login.html")
-                        .permitAll()
-                );
+                .httpBasic(Customizer.withDefaults()); // Ativa o Basic Auth (Cadeado)
 
         return http.build();
     }

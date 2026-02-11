@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.Transacao;
+import com.example.demo.model.Usuario; // ESTA LINHA ESTAVA FALTANDO!
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
@@ -11,10 +12,12 @@ import java.util.List;
 public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
 
     /**
-     * QUERY METHOD: Busca todas as transações ordenadas pelo ID de forma decrescente.
-     * O Spring Data JPA interpreta o nome 'findAllByOrderByIdDesc' e gera o SQL:
-     * SELECT * FROM transacoes ORDER BY id DESC;
-     * * Isso garante que as movimentações mais recentes apareçam primeiro no Dashboard.
+     * Busca as transações de um usuário específico.
+     */
+    List<Transacao> findByUsuario(Usuario usuario);
+
+    /**
+     * Busca todas as transações ordenadas pelo ID de forma decrescente.
      */
     List<Transacao> findAllByOrderByIdDesc();
 }

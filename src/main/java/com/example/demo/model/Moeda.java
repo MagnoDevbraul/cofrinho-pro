@@ -6,61 +6,53 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import java.time.LocalDateTime;
 
-/**
- * CLASSE ABSTRATA MOEDA (Base para o Polimorfismo)
- * * @Inheritance(strategy = InheritanceType.SINGLE_TABLE):
- * Estratégia de "Tabela Única". Todas as moedas (Real, Dolar, etc) ficam na mesma tabela 'moedas',
- * o que melhora a performance em consultas globais.
- * * @DiscriminatorColumn: Cria uma coluna especial 'tipo_moeda' no PostgreSQL
- * para identificar se aquela linha representa um Real, Dolar, Euro, etc.
- */
 @Entity
 @Table(name = "moedas")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "tipo_moeda")
 public abstract class Moeda {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 'protected' permite que as classes filhas acessem o valor diretamente
+    private String nome; // Adicionado para resolver o erro 'cannot find symbol'
+
     protected double valor;
 
     @Column(name = "data_deposito")
     private LocalDateTime dataDeposito = LocalDateTime.now();
 
-    // Construtor padrão exigido pelo JPA
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
+
     public Moeda() {}
 
     public Moeda(double valor) {
         this.valor = valor;
     }
 
+    // Getters e Setters Essenciais
+    public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 
     public double getValor() { return valor; }
     public void setValor(double valor) { this.valor = valor; }
 
-    /**
-     * Formata a data para um padrão legível no JSON retornado ao Frontend.
-     */
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     public LocalDateTime getDataDeposito() { return dataDeposito; }
 
-    /**
-     * @JsonProperty("nome"): Expõe o nome da classe (ex: "Real", "Dolar")
-     * como um atributo 'nome' no JSON, facilitando a identificação no Dashboard.
-     */
-    @JsonProperty("nome")
-    public String getNome() {
+    @JsonProperty("tipo") // Alterado para não conflitar com o campo 'nome'
+    public String getTipoClasse() {
         return this.getClass().getSimpleName();
     }
 
-    /**
-     * MÉTODO ABSTRATO: Obriga cada moeda filha a implementar sua própria
-     * lógica de conversão, garantindo o comportamento polimórfico.
-     */
     public abstract double converter();
 }
