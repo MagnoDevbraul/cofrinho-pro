@@ -11,16 +11,53 @@ com conversão automática via API externa e visualização de dados em tempo re
 
 <<<<<<< HEAD
 ##  Diferenciais Técnicos (Arquitetura)
+=======
+##  Diferenciais Técnicos e Arquitetura
+>>>>>>> 0e2ba16 (Final Dashboard integrado com java 25 e PostegreSQL)
 
+Este projeto demonstra maturidade em Engenharia de Software ao aplicar conceitos fundamentais de forma prática:
+
+- **Herança e Polimorfismo**: Implementação de *Single Table Inheritance* com JPA. A classe base `Moeda` define o comportamento comum, enquanto subclasses especializadas (`Dolar`, `Euro`, `Iene`, etc.) gerenciam lógicas de conversão específicas.
+- **Integração com API Externa**: Consumo em tempo real da *AwesomeAPI* para atualização automática das taxas de câmbio (USD, EUR, JPY, etc.) diretamente no Backend.
+- **Segurança**: Autenticação robusta utilizando `Spring Security` com criptografia de senhas via `BCrypt`.
+- **Persistência**: Banco de dados PostgreSQL com estratégia de atualização de esquema automática (`ddl-auto=update`).
+
+---
+
+<<<<<<< HEAD
+##  Funcionalidades
+=======
+##  Funcionalidades Principais
+>>>>>>> 0e2ba16 (Final Dashboard integrado com java 25 e PostegreSQL)
+
+* **Dashboard Inteligente**: Cards dinâmicos que mostram o saldo na moeda original e a conversão instantânea para Real (R$).
+* **Conversão em Tempo Real**: O sistema identifica a moeda e busca o valor de mercado atualizado para compor o patrimônio total.
+* **Gráficos Dinâmicos**: Visualização por composição (Rosca) e saldo absoluto (Barras) utilizando **Chart.js**.
+* **Histórico Auditável**: Registro automático de depósitos e retiradas com data, hora e tipo de transação.
+* **Modo Escuro/Claro**: Interface moderna com suporte a temas persistentes.
+
+---
+
+<<<<<<< HEAD
+=======
+##  Tecnologias Utilizadas
+
+* **Backend**: Java, Spring Boot 3.x, Spring Data JPA, Spring Security.
+* **Frontend**: HTML5, CSS3, JavaScript Vanilla, Chart.js.
+* **Banco de Dados**: PostgreSQL.
+* **Consumo de API**: JSON/REST para cotações financeiras.
+
+---
+
+>>>>>>> 0e2ba16 (Final Dashboard integrado com java 25 e PostegreSQL)
 ##  Visual do Sistema
 
 ### Dashboard Principal
 ![Dashboard](./capturas%20de%20tela/painel.png)
-*Painel com conversão automática e monitoramento de ativos.*
 
 ### Persistência de Dados
 ![Banco de Dados](./capturas%20de%20tela/banco.png)
-*Estrutura de tabelas e logs de auditoria armazenados no PostgreSQL.*
+
 ---
 
 <<<<<<< HEAD
