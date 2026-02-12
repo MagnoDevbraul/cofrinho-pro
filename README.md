@@ -11,7 +11,7 @@ com conversão automática via API externa e visualização de dados em tempo re
 
 
 ##  Diferenciais Técnicos (Arquitetura)
-=======
+
 ##  Diferenciais Técnicos e Arquitetura
 > 0e2ba16 (Final Dashboard integrado com java 25 e PostegreSQL)
 
@@ -26,7 +26,7 @@ Este projeto demonstra maturidade em Engenharia de Software ao aplicar conceitos
 
 
 ##  Funcionalidades
-=======
+---
 ##  Funcionalidades Principais
 > 0e2ba16 (Final Dashboard integrado com java 25 e PostegreSQL)
 
@@ -88,12 +88,15 @@ Este projeto demonstra maturidade em Engenharia de Software ao aplicar conceitos
 
 ---
 
-##  Roadmap de Evolução
+##  Evoluções Recentes
+- **Integração com API de Câmbio**: O sistema agora consome dados em tempo real da AwesomeAPI para garantir conversões precisas.
 
-1.  **Integração com API de Câmbio**: Atualização das taxas (Dólar, Euro, etc.) via API externa em tempo real.
-2.  **Dashboard de Metas**: Sistema de progresso para objetivos de economia (ex: "Viagem").
-3.  **Exportação de Relatórios**: Geração de extratos mensais em PDF.
-=======
+##  Roadmap de Evolução
+1. **Dashboard de Metas**: Sistema de progresso para objetivos de economia (ex: "Viagem").
+2. **Exportação de Relatórios**: Geração de extratos mensais em PDF.
+3. **Notificações**: Alertas quando uma moeda atingir um valor específico de câmbio.
+---
+
 ##  Como Executar
 
 1. **Clone o repositório**.
