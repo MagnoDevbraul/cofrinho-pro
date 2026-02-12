@@ -9,11 +9,11 @@ com conversão automática via API externa e visualização de dados em tempo re
 
 ---
 
-<<<<<<< HEAD
+
 ##  Diferenciais Técnicos (Arquitetura)
 =======
 ##  Diferenciais Técnicos e Arquitetura
->>>>>>> 0e2ba16 (Final Dashboard integrado com java 25 e PostegreSQL)
+> 0e2ba16 (Final Dashboard integrado com java 25 e PostegreSQL)
 
 Este projeto demonstra maturidade em Engenharia de Software ao aplicar conceitos fundamentais de forma prática:
 
@@ -24,11 +24,11 @@ Este projeto demonstra maturidade em Engenharia de Software ao aplicar conceitos
 
 ---
 
-<<<<<<< HEAD
+
 ##  Funcionalidades
 =======
 ##  Funcionalidades Principais
->>>>>>> 0e2ba16 (Final Dashboard integrado com java 25 e PostegreSQL)
+> 0e2ba16 (Final Dashboard integrado com java 25 e PostegreSQL)
 
 * **Dashboard Inteligente**: Cards dinâmicos que mostram o saldo na moeda original e a conversão instantânea para Real (R$).
 * **Conversão em Tempo Real**: O sistema identifica a moeda e busca o valor de mercado atualizado para compor o patrimônio total.
@@ -38,7 +38,7 @@ Este projeto demonstra maturidade em Engenharia de Software ao aplicar conceitos
 
 ---
 
-<<<<<<< HEAD
+
 =======
 ##  Tecnologias Utilizadas
 
@@ -49,7 +49,7 @@ Este projeto demonstra maturidade em Engenharia de Software ao aplicar conceitos
 
 ---
 
->>>>>>> 0e2ba16 (Final Dashboard integrado com java 25 e PostegreSQL)
+> 0e2ba16 (Final Dashboard integrado com java 25 e PostegreSQL)
 ##  Visual do Sistema
 
 ### Painel de Controle Principal
@@ -60,7 +60,7 @@ Este projeto demonstra maturidade em Engenharia de Software ao aplicar conceitos
 
 ---
 
-<<<<<<< HEAD
+
 ##  Tecnologias Utilizadas
 
 * **Backend**: Java 25, Spring Boot 3.x, Spring Data JPA.
@@ -100,7 +100,7 @@ Este projeto demonstra maturidade em Engenharia de Software ao aplicar conceitos
 2. **Configuração do Banco**: No `application.properties`, ajuste as credenciais do seu PostgreSQL local.
 3. **Build e Run**: Execute a classe `CofrinhoApiApplication`.
 4. **Acesso**: O dashboard está disponível em `http://localhost:8080/index.html`.
->>>>>>> 0e2ba16 (Final Dashboard integrado com java 25 e PostegreSQL)
+> 0e2ba16 (Final Dashboard integrado com java 25 e PostegreSQL)
 
 ---
 **Desenvolvido por Magno.**
