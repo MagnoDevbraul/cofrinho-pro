@@ -39,7 +39,6 @@ Este projeto demonstra maturidade em Engenharia de Software ao aplicar conceitos
 ---
 
 
-=======
 ##  Tecnologias Utilizadas
 
 * **Backend**: Java, Spring Boot 3.x, Spring Data JPA, Spring Security.
