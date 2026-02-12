@@ -53,10 +53,10 @@ Este projeto demonstra maturidade em Engenharia de Software ao aplicar conceitos
 ##  Visual do Sistema
 
 ### Painel de Controle Principal
-![Painel](./capturas%20de%20tela/painel.png)
+![Painel](./screenshots/painel.png)
 
 ### Persistência de Dados
-![Banco de Dados](./capturas%20de%20tela/banco.png)
+![Banco de Dados](./screenshots/banco.png)
 
 ---
 
