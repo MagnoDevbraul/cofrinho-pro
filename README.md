@@ -78,10 +78,10 @@ Este projeto demonstra maturidade em Engenharia de Software ao aplicar conceitos
     * Ajuste as credenciais de `username` e `password` do seu banco local.
 3.  **Executar a Aplicação**:
     * Rode a classe `CofrinhoApiApplication` através do IntelliJ ou via terminal: `./mvnw spring-boot:run`
-4.  **Acesso**:
-    * Abra o navegador em `http://localhost:8080/login`.
-    * **usuário**: `Cofre-pro`
-    * **Senha**: `1500`
+### 4. Acesso:
+* Abra o navegador em `http://localhost:8080/login`.
+* **Primeiro Acesso:** Clique em "Cadastre-se" para criar sua conta personalizada.
+* Após o cadastro, utilize suas credenciais para explorar o dashboard e gerenciar suas moedas.
 
 > **Dica para Teste**: Cadastre-se na primeira execução ou use o usuário criado durante o setup para explorar o dashboard.
 
