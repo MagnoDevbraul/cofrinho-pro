@@ -86,4 +86,4 @@ Desenvolvi este projeto para demonstrar maturidade em Engenharia de Software:
 
 ---
 
-**Desenvolvido por Magno.**
+**Desenvolvido por Magno Walério.**
