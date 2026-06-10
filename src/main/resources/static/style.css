@@ -1,0 +1,506 @@
+:root {
+    --bg-main: #1a1e24;
+    --bg-card: #222731;
+    --bg-sidebar: #1d212a;
+    --text-color: #ffffff;
+    --text-muted: #a0aec0;
+    --border-color: #2d3545;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-color);
+    overflow-x: hidden;
+}
+
+/* LAYOUT PRINCIPAL EM TELA CHEIA */
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* BARRA LATERAL */
+.sidebar {
+    background: linear-gradient(
+        180deg,
+        #0f172a 0%,
+        #1e293b 100%
+    );
+    color: white;
+    width: 260px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    text-align: center;
+}
+
+.sidebar-header h2 {
+    margin: 0 0 40px 0;
+    font-size: 24px;
+    color: #ffffff;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* BOTÕES DO MENU */
+
+.menu-btn {
+    width: 100%;
+    padding: 15px 16px;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    background-color: #273449;
+    color: #ffffff;
+    text-align: left;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.menu-btn i {
+    width: 20px;
+    margin-right: 10px;
+}
+
+.menu-btn:hover {
+    background-color: #3b82f6;
+    border-color: #60a5fa;
+    transform: translateX(6px);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+}
+
+.menu-btn.active {
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #1d4ed8
+    );
+    border-color: #60a5fa;
+    font-weight: bold;
+    box-shadow: 0 0 18px rgba(37, 99, 235, 0.45);
+}
+
+/* BOTÃO SAIR */
+
+.btn-logout {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(
+        135deg,
+        #ef4444,
+        #dc2626
+    );
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.25s ease;
+}
+
+.btn-logout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
+}
+
+.btn-logout i {
+    margin-right: 8px;
+}
+
+/* CONTEÚDO PRINCIPAL */
+.main-content {
+    flex-grow: 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* CONFIGURAÇÃO DO TOPO: CARDS + GRÁFICO DE COLUNAS */
+.dashboard-top-row {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    align-items: stretch;
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+/* CONTAINER DOS CARDS: Organiza em 3 colunas compactas fixas */
+.moedas-grid-top-triple {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    width: 380px; /* Trava a largura para os cards não esticarem */
+    flex-shrink: 0; /* Impede o gráfico de esmagar as moedas */
+}
+
+/* CARDS DE MOEDA: Tamanho reduzido, bordas suaves e 100% clicáveis */
+.card-moeda {
+    padding: 8px 12px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 52px;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+/* Efeito visual ao passar o mouse por cima do card */
+.card-moeda:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Efeito visual ao clicar fisicamente no card */
+.card-moeda:active {
+    transform: translateY(0);
+}
+
+/* Ajuste dos textos internos para caberem no tamanho menor */
+.card-moeda .id-tag {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    margin-bottom: 2px;
+}
+
+.card-moeda .sigla {
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* --- PALETA DE CORES EXCLUSIVAS (UNIFICADA) --- */
+.card-moeda.brl    { background-color: #27ae60; color: #fff; } /* Verde */
+.card-moeda.usd    { background-color: #2980b9; color: #fff; } /* Azul */
+.card-moeda.eur    { background-color: #9b59b6; color: #fff; } /* Roxo */
+.card-moeda.krw    { background-color: #e67e22; color: #fff; } /* Laranja */
+.card-moeda.jpy    { background-color: #f1c40f; color: #1a1e24; } /* Amarelo */
+.card-moeda.btc    { background-color: #7f8c8d; color: #fff; } /* Cinza */
+.card-moeda.rupia  { background-color: #34495e; color: #fff; } /* Azul Escuro / Grafite */
+.card-moeda.cny    { background-color: #16a085; color: #fff; } /* Yuan - Verde-água */
+
+/* 🌸 SHEKEL EM ROSA DEFINITIVO (Adicionado !important para evitar heranças indesejadas) */
+.card-moeda.shekel, .card-moeda.ils { background-color: #e84393 !important; color: #fff !important; }
+
+/* Bloco do Gráfico de Colunas do Topo */
+.tile-grafico-barras {
+    flex-grow: 1;
+    background-color: var(--bg-card);
+    border-radius: 16px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-container-top {
+    width: 100%;
+    height: 100%;
+    min-height: 150px;
+}
+
+/* GRID INFERIOR (PIZZA + HISTÓRICO) */
+.dashboard-body-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.8fr;
+    gap: 25px;
+}
+
+.panel-card {
+    background-color: var(--bg-card);
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+.panel-card h3 {
+    margin-top: 0;
+    font-size: 14px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+.chart-wrapper {
+    max-width: 250px;
+    margin: 0 auto;
+}
+
+/* TABELA DE HISTÓRICO */
+.table-container {
+    overflow-x: auto;
+}
+
+.transacoes-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.transacoes-table th {
+    color: var(--text-muted);
+    font-size: 13px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.transacoes-table td {
+    padding: 15px 0;
+    border-bottom: 1px solid #2d3545;
+    font-size: 15px;
+}
+
+.val-positivo { color: #2ecc71; font-weight: 600; }
+.val-negativo { color: #e74c3c; font-weight: 600; }
+
+/* BADGES DE AÇÃO */
+.badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+.badge.deposito { background-color: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+.badge.retirada { background-color: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+
+/* SEÇÃO TOTAL INFERIOR */
+.total-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.total-info span { font-size: 12px; color: var(--text-muted); letter-spacing: 1px;}
+.total-info h1 { margin: 5px 0 0 0; color: #2ecc71; font-size: 36px; }
+
+/* ESTILIZAÇÃO COMPLETA DE LOGIN / CADASTRO */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #1a1e24;
+}
+
+.auth-card {
+    background-color: #222731;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.auth-card h2 {
+    color: #fff;
+    margin-bottom: 30px;
+    font-size: 24px;
+}
+
+.auth-input {
+    width: 100%;
+    padding: 14px 16px;
+    background-color: #1a1e24;
+    border: 1px solid #2d3545;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 15px;
+    box-sizing: border-box;
+    transition: 0.3s;
+    margin-bottom: 18px;
+}
+
+.auth-input:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+.btn-auth {
+    width: 100%;
+    padding: 14px;
+    background-color: #27ae60;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-auth:hover {
+    background-color: #219653;
+}
+
+.auth-link {
+    display: block;
+    margin-top: 18px;
+    color: #a0aec0;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.auth-link:hover {
+    color: #fff;
+}
+
+/* ESTILIZAÇÃO DA JANELA MODAL */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+    background-color: #1e2533;
+    border: 1px solid #2d3545;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    animation: scaleUp 0.2s ease-out;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #2d3545;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.close-modal-btn {
+    background: none;
+    border: none;
+    color: #a0aec0;
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-modal-btn:hover {
+    color: #fff;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    color: #a0aec0;
+    font-size: 0.9rem;
+}
+
+.form-group input {
+    background-color: #151a24;
+    border: 1px solid #2d3545;
+    border-radius: 6px;
+    padding: 12px;
+    color: #fff;
+    font-size: 1.1rem;
+    outline: none;
+}
+
+.form-group input:focus {
+    border-color: #2980b9;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-action {
+    flex: 1;
+    border: none;
+    border-radius: 6px;
+    padding: 12px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.1s, filter 0.2s;
+}
+
+.btn-action:active {
+    transform: scale(0.98);
+}
+
+.btn-action.deposito {
+    background-color: #27ae60;
+    color: #fff;
+}
+
+.btn-action.retirada {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+.btn-action:hover {
+    filter: brightness(1.1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleUp {
+    from { transform: scale(0.95); opacity: 0; } to {
+    transform: scale(1); opacity: 1; }
+}
+
+.tendencia-up {
+    color: #2ecc71;
+    margin-left: 6px;
+}
+
+.tendencia-down {
+    color: #e74c3c;
+    margin-left: 6px;
+}
+
+.tendencia-up-card {
+    border-left: 3px solid #2ecc71;
+}
+
+.tendencia-down-card {
+    border-left: 3px solid #e74c3c;
+}

@@ -1,58 +1,93 @@
 package com.example.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.Getter;
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "moedas")
-@Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "tipo_moeda")
-public abstract class Moeda {
+public class Moeda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nome; // Adicionado para resolver o erro 'cannot find symbol'
+    private String nome; // Ex: "Dólar Carteira"
 
-    protected double valor;
+    private String codigo; // Ex: USD, BRL, EUR
 
-    @Column(name = "data_deposito")
-    private LocalDateTime dataDeposito = LocalDateTime.now();
+    // Saldo atual nominal da moeda no cofrinho
+    @Column(nullable = false, precision = 19, scale = 4)
+    private BigDecimal saldo = BigDecimal.ZERO;
 
-    @ManyToOne
+    // NOVO CAMPO: Meta financeira convertida em Real (Ex: R$ 10.000,00)
+    @Column(name = "meta_em_real", nullable = false, precision = 19, scale = 4)
+    private BigDecimal metaEmReal = BigDecimal.ZERO;
+
+    // Relacionamento com usuário dono da moeda
+    @ManyToOne(optional = false)
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    public Moeda() {}
-
-    public Moeda(double valor) {
-        this.valor = valor;
+    // Construtor Padrão (Obrigatório pelo JPA)
+    public Moeda() {
+        this.saldo = BigDecimal.ZERO;
+        this.metaEmReal = BigDecimal.ZERO; // Segurança extra contra valores nulos
     }
 
-    // Getters e Setters Essenciais
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
-
-    public double getValor() { return valor; }
-    public void setValor(double valor) { this.valor = valor; }
-
-    public Usuario getUsuario() { return usuario; }
-    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
-
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
-    public LocalDateTime getDataDeposito() { return dataDeposito; }
-
-    @JsonProperty("tipo") // Alterado para não conflitar com o campo 'nome'
-    public String getTipoClasse() {
-        return this.getClass().getSimpleName();
+    // Construtor Completo atualizado
+    public Moeda(String nome, String codigo, BigDecimal saldo, BigDecimal metaEmReal, Usuario usuario) {
+        this.nome = nome;
+        this.codigo = codigo;
+        this.saldo = saldo != null ? saldo : BigDecimal.ZERO;
+        this.metaEmReal = metaEmReal != null ? metaEmReal : BigDecimal.ZERO;
+        this.usuario = usuario;
     }
 
-    public abstract double converter();
+    // ===== GETTERS =====
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public BigDecimal getSaldo() {
+        return saldo != null ? saldo : BigDecimal.ZERO;
+    }
+
+    public BigDecimal getMetaEmReal() {
+        return metaEmReal != null ? metaEmReal : BigDecimal.ZERO;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    // ===== SETTERS =====
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public void setSaldo(BigDecimal saldo) {
+        this.saldo = saldo != null ? saldo : BigDecimal.ZERO;
+    }
+
+    public void setMetaEmReal(BigDecimal metaEmReal) {
+        this.metaEmReal = metaEmReal != null ? metaEmReal : BigDecimal.ZERO;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
 }

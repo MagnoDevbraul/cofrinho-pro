@@ -1,151 +1,130 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.*; // Importa todas as moedas de uma vez (Real, Dolar, Euro, etc)
-import com.example.demo.repository.MoedaRepository;
-import com.example.demo.repository.TransacaoRepository;
-import com.example.demo.repository.UsuarioRepository;
-import com.example.demo.service.CotacaoService;
+import com.example.demo.dto.MoedaResumoDTO;
+import com.example.demo.service.MoedaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/moedas")
 public class MoedaController {
 
     @Autowired
-    private MoedaRepository repository;
+    private MoedaService moedaService;
 
-    @Autowired
-    private TransacaoRepository transacaoRepository;
+    /**
+     * Resumo utilizado pelos gráficos do dashboard.
+     */
+    @GetMapping("/resumo")
+    public ResponseEntity<List<MoedaResumoDTO>> obterResumo(
+            @AuthenticationPrincipal UserDetails principal) {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private CotacaoService cotacaoService; // Serviço para pegar valores da internet
-
-    @GetMapping("/total")
-    public List<Map<String, Object>> buscarTodas() {
-        Usuario logado = getUsuarioLogado();
-        List<Moeda> moedas = repository.findByUsuario(logado);
-
-        // Buscando o "Kit Global" de cotações em tempo real
-        double usd = cotacaoService.getPreco("USD-BRL");
-        double eur = cotacaoService.getPreco("EUR-BRL");
-        double jpy = cotacaoService.getPreco("JPY-BRL");
-        double cny = cotacaoService.getPreco("CNY-BRL");
-        double inr = cotacaoService.getPreco("INR-BRL");
-        double krw = cotacaoService.getPreco("KRW-BRL");
-        double ils = cotacaoService.getPreco("ILS-BRL");
-
-        return moedas.stream().map(m -> {
-            Map<String, Object> dto = new HashMap<>();
-            dto.put("id", m.getId());
-            dto.put("nome", m.getNome());
-            dto.put("valorOriginal", m.getValor());
-
-            // Cálculo de conversão automática para o seu gráfico
-            double valorEmReal = 0.0;
-            if (m instanceof Dolar) valorEmReal = m.getValor() * usd;
-            else if (m instanceof Euro) valorEmReal = m.getValor() * eur;
-            else if (m instanceof Iene) valorEmReal = m.getValor() * jpy;
-            else if (m instanceof Yuan) valorEmReal = m.getValor() * cny;
-            else if (m instanceof Rupia) valorEmReal = m.getValor() * inr;
-            else if (m instanceof Won) valorEmReal = m.getValor() * krw;
-            else if (m instanceof Shekel) valorEmReal = m.getValor() * ils;
-            else valorEmReal = m.getValor(); // Real é 1:1
-
-            dto.put("valorEmReal", valorEmReal);
-            return dto;
-        }).collect(Collectors.toList());
-    }
-
-    @PostMapping("/criar")
-    public ResponseEntity<String> criarMoeda(@RequestParam String nome, @RequestParam Double valorInicial, @RequestParam String tipo) {
-        Usuario usuarioLogado = getUsuarioLogado();
-
-        Moeda novaMoeda;
-        // Lógica para decidir qual classe instanciar
-        if (tipo.equalsIgnoreCase("DOLAR")) novaMoeda = new Dolar(valorInicial);
-        else if (tipo.equalsIgnoreCase("EURO")) novaMoeda = new Euro(valorInicial);
-        else novaMoeda = new Real(valorInicial);
-
-        novaMoeda.setNome(nome);
-        novaMoeda.setUsuario(usuarioLogado);
-
-        repository.save(novaMoeda);
-        registrarHistorico(nome, valorInicial, "CRIAÇÃO", usuarioLogado);
-
-        return ResponseEntity.ok("Moeda '" + nome + "' criada com sucesso! ID: " + novaMoeda.getId());
-    }
-
-    @PostMapping("/adicionar/{id}")
-    public ResponseEntity<String> adicionar(@PathVariable Long id, @RequestParam Double valor) {
-        Usuario usuarioLogado = getUsuarioLogado();
-        Moeda m = repository.findById(id).orElse(null);
-
-        if (m == null) return ResponseEntity.status(404).body("Erro: A moeda com ID " + id + " não existe!");
-
-        if (!m.getUsuario().getId().equals(usuarioLogado.getId())) {
-            return ResponseEntity.status(403).body("Acesso negado: esta moeda não é sua!");
+        if (principal == null) {
+            return ResponseEntity.status(401).build();
         }
 
-        m.setValor(m.getValor() + valor);
-        repository.save(m);
-        registrarHistorico(m.getNome(), valor, "DEPÓSITO", usuarioLogado);
+        String username = principal.getUsername();
 
-        return ResponseEntity.ok("Sucesso! Valor adicionado.");
+        List<MoedaResumoDTO> resumo =
+                moedaService.obterResumoPorUsername(username);
+
+        return ResponseEntity.ok(resumo);
     }
 
-    @PostMapping("/remover-valores/{id}")
-    public ResponseEntity<String> removerValores(@PathVariable Long id, @RequestParam Double valor) {
-        Usuario usuarioLogado = getUsuarioLogado();
-        Moeda m = repository.findById(id).orElse(null);
+    /**
+     * Total geral da carteira.
+     */
+    @GetMapping("/total-geral")
+    public ResponseEntity<Map<String, Object>> obterTotalGeral(
+            @AuthenticationPrincipal UserDetails principal) {
 
-        if (m != null) {
-            if (!m.getUsuario().getId().equals(usuarioLogado.getId())) {
-                return ResponseEntity.status(403).body("Acesso negado!");
-            }
-            double novoValor = m.getValor() - valor;
-            m.setValor(novoValor < 0 ? 0.0 : novoValor);
-            repository.save(m);
-            registrarHistorico(m.getNome(), valor, "RETIRADA", usuarioLogado);
-            return ResponseEntity.ok("Retirada realizada!");
+        if (principal == null) {
+            return ResponseEntity.status(401).build();
         }
-        return ResponseEntity.status(404).body("Moeda não encontrada.");
+
+        String username = principal.getUsername();
+
+        List<MoedaResumoDTO> resumo =
+                moedaService.obterResumoPorUsername(username);
+
+        double totalEmReal = resumo.stream()
+                .mapToDouble(m ->
+                        m.getValorEmReal() != null
+                                ? m.getValorEmReal().doubleValue()
+                                : 0.0)
+                .sum();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalEmReal", totalEmReal);
+
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/historico")
-    public List<Transacao> buscarHistorico() {
-        Usuario logado = getUsuarioLogado();
-        // Agora só retorna o que for SEU!
-        return transacaoRepository.findByUsuario(logado);
+    /**
+     * Realiza depósito.
+     */
+    @PostMapping("/{id}/depositar")
+    public ResponseEntity<Map<String, String>> depositar(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> payload,
+            @AuthenticationPrincipal UserDetails principal) {
+
+        if (principal == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        BigDecimal valor =
+                new BigDecimal(payload.get("valor"));
+
+        moedaService.realizarDeposito(
+                id,
+                valor,
+                principal.getUsername()
+        );
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "mensagem",
+                        "Depósito realizado com sucesso!"
+                )
+        );
     }
 
-    // --- MÉTODOS AUXILIARES ---
+    /**
+     * Realiza retirada.
+     */
+    @PostMapping("/{id}/retirar")
+    public ResponseEntity<Map<String, String>> retirar(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> payload,
+            @AuthenticationPrincipal UserDetails principal) {
 
-    private Usuario getUsuarioLogado() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Usuário não autenticado!"));
-    }
+        if (principal == null) {
+            return ResponseEntity.status(401).build();
+        }
 
-    private void registrarHistorico(String nome, Double valor, String tipo, Usuario usuario) {
-        Transacao t = new Transacao();
-        t.setMoedaNome(nome);
-        t.setValorAlterado(valor);
-        t.setTipo(tipo);
-        t.setDataHora(LocalDateTime.now());
-        t.setUsuario(usuario);
-        transacaoRepository.save(t);
+        BigDecimal valor =
+                new BigDecimal(payload.get("valor"));
+
+        moedaService.realizarRetirada(
+                id,
+                valor,
+                principal.getUsername()
+        );
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "mensagem",
+                        "Retirada realizada com sucesso!"
+                )
+        );
     }
 }

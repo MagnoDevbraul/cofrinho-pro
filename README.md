@@ -68,21 +68,40 @@ Desenvolvi este projeto para demonstrar maturidade em Engenharia de Software:
 2.  **Configurar o `application.properties`**:
     * Ajuste as credenciais de `username` e `password` do seu banco local.
 3.  **Executar a Aplicação**:
-    * Rode a classe `CofrinhoApiApplication` através da sua IDE ou via terminal:
-    ```bash
-    ./mvnw spring-boot:run
-    ```
-4.  **Acesso**:
-    * Abra `http://localhost:8080/login`.
-    * **Primeiro Acesso**: Use o botão de cadastro para criar sua conta.
+4. Acesso:
 
----
+* Abra o navegador em:
 
-##  Roadmap de Evolução
+http://localhost:8080/login
+
+* Primeiro acesso:
+  Cadastre-se para criar sua conta.
+
+* Após o login você será redirecionado para:
+
+http://localhost:8080/dashboard.html
+
+##  Evoluções Recentes
+- **Integração com API de Câmbio**: O sistema agora consome dados em tempo real da AwesomeAPI para garantir conversões precisas.
+
 
 - [ ] **Dashboard de Metas**: Sistema de progresso para objetivos de economia (ex: "Viagem").
 - [ ] **Exportação de Relatórios**: Geração de extratos mensais em PDF.
 - [ ] **Notificações**: Alertas via e-mail quando uma moeda atingir um valor específico de câmbio.
+=======
+##  Roadmap de Evolução
+1. **Dashboard de Metas**: Sistema de progresso para objetivos de economia (ex: "Viagem").
+2. **Exportação de Relatórios**: Geração de extratos mensais em PDF.
+3. **Notificações**: Alertas quando uma moeda atingir um valor específico de câmbio.
+=======
+##  Como Executar
+
+1. **Clone o repositório**.
+2. **Configuração do Banco**: No `application.properties`, ajuste as credenciais do seu PostgreSQL local.
+3. **Build e Run**: Execute a classe `CofrinhoApiApplication`.
+4. **Acesso**: O dashboard está disponível em `http://localhost:8080/index.html`.
+>>>>>>> 0e2ba16 (Final Dashboard integrado com java 25 e PostegreSQL)
+>>>>>>> 3eba12a (refactor: DTOs, GlobalExceptionHandler e melhorias de segurança)
 
 ---
 

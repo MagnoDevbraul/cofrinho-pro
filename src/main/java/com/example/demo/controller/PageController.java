@@ -16,6 +16,7 @@ public class PageController {
      * O 'forward:' realiza um redirecionamento interno no servidor, mantendo a
      * URL limpa no navegador do usuário.
      */
+
     @GetMapping("/login")
     public String login() {
         return "forward:/login.html";
@@ -35,6 +36,6 @@ public class PageController {
      */
     @GetMapping("/index")
     public String index() {
-        return "forward:/index.html";
+        return "forward:/dashboard.html";
     }
 }

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cofrinho Pro - Dashboard</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="app-layout">
+
+    <!-- BARRA LATERAL -->
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+            <h2> Cofrinho Pro</h2>
+        </div>
+
+        <nav class="sidebar-menu">
+
+            <button class="menu-btn active">
+                <i class="fas fa-wallet"></i>
+                Saldo Total (R$)
+            </button>
+
+            <button class="menu-btn">
+                <i class="fas fa-info-circle"></i>
+                Ver Detalhes
+            </button>
+
+            <button class="menu-btn">
+                <i class="fas fa-hand-holding-usd"></i>
+                Retirar Valor
+            </button>
+
+            <button class="btn-logout" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                Sair
+            </button>
+
+        </nav>
+
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content">
+
+        <!-- NOVO TOPO COMPACTO: CARDS EM DUAS LINHAS + GRÁFICO DE COLUNAS -->
+        <div class="dashboard-top-row">
+
+            <! Cards menores agrupados e ordenados por ID (1 ao 8) >
+            <div class="moedas-grid-top-triple" id="cardsMoedasTop">
+                <div class="card-moeda brl">
+                    <span class="id-tag">ID: 1 - REAL</span>
+                    <p class="sigla">R$ 0.00</p>
+                </div>
+                <div class="card-moeda usd">
+                    <span class="id-tag">ID: 2 - DOLAR</span>
+                    <p class="sigla">U$ 0.00</p>
+                </div>
+                <div class="card-moeda eur">
+                    <span class="id-tag">ID: 3 - EURO</span>
+                    <p class="sigla">€ 0.00</p>
+                </div>
+
+                <div class="card-moeda krw">
+                    <span class="id-tag">ID: 4 - WON</span>
+                    <p class="sigla">₩ 0.00</p>
+                </div>
+                <div class="card-moeda jpy">
+                    <span class="id-tag">ID: 5 - IENE</span>
+                    <p class="sigla">¥ 0.00</p>
+                </div>
+                <div class="card-moeda btc">
+                    <span class="id-tag">ID: 6 - BITCOIN</span>
+                    <p class="sigla">₿ 0.00</p>
+                </div>
+
+                <div class="card-moeda rupia">
+                    <span class="id-tag">ID: 7 - RUPIA</span>
+                    <p class="sigla">₹ 0.00</p>
+                </div>
+                <div class="card-moeda cny">
+                    <span class="id-tag">ID: 8 - YUAN</span>
+                    <p class="sigla">¥ 0.00</p>
+                </div>
+                <div class="card-moeda shekel ils">
+                    <span class="id-tag">ID: 9 - SHEKEL</span>
+                    <p class="sigla">₪ 0.00</p>
+                </div>
+            </div>
+
+
+            <!-- Espaço do Gráfico de Colunas (Top) -->
+            <div class="panel-card tile-grafico-barras">
+                <div class="chart-container-top"
+                     style="position: relative; width: 100%; height: 100%;">
+                    <canvas id="graficoBarrasTop"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TOTAL DA CARTEIRA  -->
+        <section class="panel-card total-section">
+            <div class="total-info">
+                <span>TOTAL DA CARTEIRA</span>
+                <h1 id="totalCarteira">R$ 170.866,53</h1>
+            </div>
+        </section>
+
+        <div id="filtrosHistorico"
+             class="filtros-historico">
+        </div>
+
+        <!-- SEÇÃO CENTRAL: GRÁFICO DE PIZZA/ROSCA + HISTÓRICO -->
+        <div class="dashboard-body-grid">
+
+            <div class="panel-card tile-grafico">
+                <h3>DISTRIBUIÇÃO</h3>
+                <div class="chart-wrapper">
+                    <canvas id="graficoCarteira"></canvas>
+                </div>
+            </div>
+
+            <div class="panel-card tile-historico">
+                <h3><i class="fas fa-history"></i> HISTÓRICO DE TRANSAÇÕES</h3>
+                <div class="table-container">
+                    <table class="transacoes-table">
+                        <thead>
+                        <tr>
+                            <th>Moeda</th>
+                            <th>Valor</th>
+                            <th>Ação</th>
+                            <th>Data/Hora</th>
+                        </tr>
+                        </thead>
+                        <tbody id="historicoTransacoes">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+</div>
+
+<div id="modalMovimentacao" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitulo">Movimentar Moeda</h3>
+            <button class="close-modal-btn" onclick="fecharModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="modalMoedaId">
+
+            <div class="form-group">
+                <label for="modalValor">Valor da Operação:</label>
+                <input type="number" id="modalValor" step="any" placeholder="0.00" min="0.01">
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-action deposito" onclick="enviarMovimentacao('depositar')">
+                    <i class="fas fa-arrow-down"></i> Depositar
+                </button>
+                <button class="btn-action retirada" onclick="enviarMovimentacao('retirar')">
+                    <i class="fas fa-arrow-up"></i> Retirar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

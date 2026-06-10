@@ -1,12 +1,13 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
  * ENTIDADE DE TRANSAÇÃO
- * Esta classe é responsável por registrar o log de movimentações financeiras.
- * Diferente da classe Moeda, que guarda o saldo atual, esta guarda o rastro de operações.
+ * Esta classe registra o histórico de movimentações financeiras.
  */
 @Entity
 @Table(name = "transacoes")
@@ -16,48 +17,79 @@ public class Transacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Nome da moeda que sofreu a alteração (ex: "Dolar", "Real")
-    private String moedaNome;
+    @ManyToOne
+    @JoinColumn(name = "moeda_id", nullable = false)
+    private Moeda moeda;
 
-    // O valor exato que foi adicionado ou removido no momento da operação
-    private Double valorAlterado;
+    private BigDecimal valorAlterado;
 
-    // Define a natureza da operação: "DEPÓSITO" ou "RETIRADA"
     private String tipo;
 
-    // Registro temporal preciso (Data e Hora) da ocorrência
     private LocalDateTime dataHora;
 
-    //criação de tabela "usuario_id", automaticamente no PostegreSQL
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    public Usuario getUsuario() { return usuario; }
-    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+    // CONSTRUTOR VAZIO OBRIGATÓRIO
+    public Transacao() {
+    }
 
-    /**
-     * Construtor padrão exigido pelo JPA para persistência.
-     */
-    public Transacao() {}
+    // CONSTRUTOR AUXILIAR
+    public Transacao(
+            Moeda moeda,
+            BigDecimal valorAlterado,
+            String tipo,
+            LocalDateTime dataHora,
+            Usuario usuario) {
 
-    /* * Getters e Setters:
-     * Permitem que o Spring Data e o Jackson (JSON) acessem os dados
-     * para salvar no banco ou enviar para a tabela de histórico no Frontend.
-     */
+        this.moeda = moeda;
+        this.valorAlterado = valorAlterado;
+        this.tipo = tipo;
+        this.dataHora = dataHora;
+        this.usuario = usuario;
+    }
 
+    //  Getters E Setters
     public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
 
-    public String getMoedaNome() { return moedaNome; }
-    public void setMoedaNome(String moedaNome) { this.moedaNome = moedaNome; }
+    public Moeda getMoeda() {
+        return moeda;
+    }
 
-    public Double getValorAlterado() { return valorAlterado; }
-    public void setValorAlterado(Double valorAlterado) { this.valorAlterado = valorAlterado; }
+    public void setMoeda(Moeda moeda) {
+        this.moeda = moeda;
+    }
 
-    public String getTipo() { return tipo; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
+    public java.math.BigDecimal getValorAlterado() {
+        return valorAlterado;
+    }
 
-    public LocalDateTime getDataHora() { return dataHora; }
-    public void setDataHora(LocalDateTime dataHora) { this.dataHora = dataHora; }
+    public void setValorAlterado(java.math.BigDecimal valorAlterado) {
+        this.valorAlterado = valorAlterado;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public java.time.LocalDateTime getDataHora() {
+        return dataHora;
+    }
+
+    public void setDataHora(java.time.LocalDateTime dataHora) {
+        this.dataHora = dataHora;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
 }

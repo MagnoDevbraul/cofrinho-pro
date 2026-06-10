@@ -1,39 +1,41 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
 /**
  * Entidade que representa a tabela de usuários no banco de dados.
- * A anotação @Data do Lombok gera automaticamente Getters, Setters,
- * Equals, HashCode e ToString, reduzindo o código boilerplate.
  */
 @Data
 @Entity
-@Table(name = "usuarios") // Define explicitamente o nome da tabela no PostgreSQL
+@Table(name = "usuarios")
 public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremento gerenciado pelo banco de dados
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Constraint: O username deve ser único e não pode ser nulo
     @Column(unique = true, nullable = false)
     @NotBlank(message = "O username deve ter no mínimo 3 caracteres")
     @Size(min = 3, message = "O username deve ter no mínimo 3 caracteres")
     private String username;
 
-    // A senha é obrigatória e será armazenada
-    // como um Hash BCrypt (via Controller)
+    /**
+     * Senha criptografada armazenada no banco.
+     * Nunca deve ser enviada para o frontend.
+     */
+    @JsonIgnore
     @Column(nullable = false)
     @NotBlank(message = "A senha não pode estar vazia")
     private String password;
 
     /**
-     * Campo de segurança utilizado para a recuperação de senha.
-     * Funciona como uma 'pergunta de segurança' para validar a identidade do usuário.
+     * Palavra-chave utilizada para recuperação de senha.
+     * Também não deve ser enviada para o frontend.
      */
+    @JsonIgnore
     private String palavraChave;
 }
